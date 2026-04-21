@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] - Unreleased
+## [1.0.0a1] - Unreleased
 
 ### Added
 - Initial release of `nvidia-usd-profiles` pip package.

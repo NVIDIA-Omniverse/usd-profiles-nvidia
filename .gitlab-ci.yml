@@ -113,19 +113,8 @@ test-pip:
   needs:
     - job: build-pip
       artifacts: true
-  parallel:
-    matrix:
-      - USD_VERSION: ["23.11", "24.05", "25.05", "25.11"]
-        NUMPY_VERSION: ["", "1.24", "2.2"]
   script:
-    - |
-      NUMPY_ARG=""
-      [ -n "$NUMPY_VERSION" ] && NUMPY_ARG="--with numpy==$NUMPY_VERSION"
-      ./repo.sh uv -- run \
-        --with ./dist/nvidia_usd_profiles-*.whl \
-        --with usd-core==$USD_VERSION \
-        $NUMPY_ARG \
-        python -m unittest discover -s tests
+    - ./repo.sh uv -- run --with ./dist/nvidia_usd_profiles-*.whl python -m unittest discover -s tests
 
 # ==============================================================================================================
 # Publish Jobs

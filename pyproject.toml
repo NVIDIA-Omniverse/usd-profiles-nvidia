@@ -28,7 +28,6 @@ Documentation = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
 packages = ["src/nvidia_usd_profiles"]
 artifacts = [
     "src/nvidia_usd_profiles/capabilities/**/*",
-    "src/nvidia_usd_profiles/_version.py",
 ]
 
 [build-system]

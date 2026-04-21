@@ -87,6 +87,7 @@ def register_release_with_kitmaker(wheel_filename: str, version: str, dry_run: b
 
 def main():
     """Main function to publish wheel files via KitMaker Portal API."""
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     parser = argparse.ArgumentParser(description="Publish wheel files to PyPI via KitMaker Portal")
     parser.add_argument(
         "--wheel-dir",

@@ -25,11 +25,9 @@ logger = logging.getLogger(__name__)
 def get_version_from_wheel(wheel_name):
     """Extract version from wheel filename."""
     match = re.search(r"^nvidia_usd_profiles-([^-]+)-", wheel_name)
-    if match:
-        version = match.group(1)
-        return version
-
-    return ""
+    if not match:
+        raise ValueError(f"Could not extract version from wheel filename: {wheel_name!r}")
+    return match.group(1)
 
 
 def register_release_with_kitmaker(wheel_filename: str, version: str, dry_run: bool) -> bool:

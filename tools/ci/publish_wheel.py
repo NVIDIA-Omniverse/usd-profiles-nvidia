@@ -71,7 +71,7 @@ def register_release_with_kitmaker(wheel_filename: str, version: str, dry_run: b
             "https://kitmaker-portal.nvidia.com/api/v0/projects/958/releases",
             json=payload,
             headers={"Authorization": f"Bearer {api_token}"},
-            verify=False,
+            verify=False,  # GitLab CI runners may lack the NVIDIA internal CA bundle
             timeout=60,
         )
         if response.status_code in (200, 201, 202):
@@ -91,7 +91,7 @@ def main():
     parser.add_argument(
         "--wheel-dir",
         help="Directory containing wheel files (relative to repo root)",
-        nargs="?"
+        required=True,
     )
     parser.add_argument(
         "--dry-run",

@@ -1,0 +1,36 @@
+[project]
+name = "nvidia-usd-profiles"
+version = "1.0.0a1"
+description = "NVIDIA OpenUSD Profiles"
+authors = [
+    {name = "NVIDIA"},
+]
+license = {text = "Apache-2.0"}
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "jinja2>=3.1.5",
+    "markdown-it-py>=3.0.0",
+]
+
+[project.optional-dependencies]
+sphinx = [
+    "sphinx>=7.2.6",
+    "myst-parser>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
+Documentation = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nvidia_usd_profiles"]
+artifacts = [
+    "src/nvidia_usd_profiles/capabilities/**/*",
+    "src/nvidia_usd_profiles/_version.py",
+]
+
+[build-system]
+requires = ["hatchling"] # SWIPAT filed under: http://nvbugs/5866335
+build-backend = "hatchling.build"

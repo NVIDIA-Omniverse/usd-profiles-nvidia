@@ -391,6 +391,7 @@ dependencies = [
     { name = "jinja2" },
     { name = "markdown-it-py", version = "3.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "markdown-it-py", version = "4.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.optional-dependencies]
@@ -408,6 +409,7 @@ requires-dist = [
     { name = "markdown-it-py", specifier = ">=3.0.0" },
     { name = "myst-parser", marker = "extra == 'sphinx'", specifier = ">=4.0.0" },
     { name = "sphinx", marker = "extra == 'sphinx'", specifier = ">=7.2.6" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.0" },
 ]
 provides-extras = ["sphinx"]
 

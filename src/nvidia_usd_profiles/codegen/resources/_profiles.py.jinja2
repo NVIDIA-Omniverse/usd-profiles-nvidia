@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+from dataclasses import dataclass
+from enum import Enum
+
+from ._capabilities import Capability
+from ._features import Feature, Features
+
+
+@dataclass(frozen=True)
+class Profile:
+    """
+    Args:
+        id: The id of the profile
+        version: The version of the profile
+        path: The path to the profile
+        features: The features of the profile
+    """
+    id: str
+    version: str
+    path: str
+    features: list[Feature]
+    capabilities: list[Capability]
+
+
+class Profiles(Profile, Enum):
+    """
+    An enumeration of all profiles.
+    """
+    {%- for profile in profiles %}
+    {{ profile.enum_id_version }} = (
+        "{{ profile.namespaced_id }}",
+        "{{ profile.version }}", 
+        {{ profile.metadata.html_path | tojson if profile.metadata and profile.metadata.html_path else 'None' }},
+        [
+            {%- for feature in features.find_all(profile.features) %}
+            Features.{{ feature.enum_id_version }},
+            {%- endfor %}
+        ],
+        [],
+    )
+    {%- endfor %}
+    # Aliases for latest values
+    {%- for profile in profiles.latest_values() if profile.enum_id != profile.enum_id_version %}
+    {{ profile.enum_id }} = {{ profile.enum_id_version }}
+    {%- endfor %}

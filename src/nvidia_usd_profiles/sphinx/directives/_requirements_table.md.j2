@@ -1,0 +1,21 @@
+{% if requirements %}
+```{list-table}
+:header-rows: 1
+:class: requirements-table
+
+* - Tags
+  - Summary
+  - Compatibility
+  - Validator
+{%- for requirement in requirements %}
+* - {% if requirement.tags %}{tag}`{{ requirement.tags.display_name }}`{% endif %}
+  - [{{ requirement.description }}](/{{requirement.metadata.md_path}})
+  - {% if requirement.compatibility %}{compatibility}`{{ requirement.compatibility.display_name }}`{% endif %}
+  {%- if requirement.validator %}
+  - {{ requirement.validator }}
+  {%- else %}
+  -
+  {%- endif %}
+{%- endfor %}
+```
+{% endif %}

@@ -120,7 +120,7 @@ test-pip:
     - job: build-pip
       artifacts: true
   script:
-    - ./repo.sh uv -- run --with ./dist/nvidia_usd_profiles-*.whl python -m unittest discover -s tests
+    - ./repo.sh uv -- run --no-project --with ./dist/nvidia_usd_profiles-*.whl --with "sphinx>=7.2.6" --with "myst-parser>=4.0.0" python -m unittest discover -s tests
 
 # ==============================================================================================================
 # Publish Jobs

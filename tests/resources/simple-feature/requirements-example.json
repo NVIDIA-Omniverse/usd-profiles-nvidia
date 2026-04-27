@@ -1,0 +1,8 @@
+{
+    "feature": {
+        "id": "example",
+        "requirements": [
+            "HI.001"
+        ]
+    }
+}

@@ -1,0 +1,74 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+from dataclasses import dataclass
+from enum import Enum
+
+from ._parameters import Parameter, Parameters
+from ._examples import Example, Examples
+
+
+@dataclass(frozen=True)
+class Requirement:
+    """
+    Args:
+        code: A unique identifier of the requirement
+        display_name: A human-readable name of the requirement
+        message: A basic description of the requirement
+        path: Relative path in documentation
+        compatibility: Compatibility of the requirement
+        tags: Tags of the requirement
+        parameters: Parameters of the requirement
+    """
+    code: str
+    version: str | None = None
+    display_name: str | None = None
+    message: str | None = None
+    path: str | None = None
+    compatibility: str | None = None
+    tags: tuple[str, ...] = ()
+    parameters: tuple[Parameter, ...] = ()
+    examples: tuple[Example, ...] = ()
+
+class Requirements(Requirement, Enum):
+    """
+    An enumeration of all requirements.
+    """
+    {%- for requirement in requirements %}
+    {{ requirement.enum_id_version }} = (
+        "{{ requirement.namespaced_id }}",
+        {{ requirement.version | string | tojson if requirement.version else 'None' }},
+        "{{requirement.name or requirement.code}}",
+        {{requirement.description | tojson}}, 
+        {{ requirement.metadata.html_path | tojson if requirement.metadata and requirement.metadata.html_path else 'None' }},
+        {{ requirement.compatibility.display_name | tojson if requirement.compatibility else 'None' }},
+        {%- if requirement.tags %}
+        ("{{requirement.tags.display_name}}",),
+        {%- else %}
+        (),
+        {%- endif %}
+        {%- if requirement.parameters %}
+        (
+            {%- for param in requirement.parameters %}
+            Parameters.{{ param.enum_name }},
+            {%- endfor %}
+        ),
+        {%- else %}
+        (),
+        {%- endif %}
+        {%- if requirement.examples %}
+        (
+            {%- for example in requirement.examples %}
+            Examples.{{ example.enum_name }},
+            {%- endfor %}
+        ),
+        {%- else %}
+        (),
+        {%- endif %}
+    )
+    {%- endfor %}
+    # Aliases for latest values
+    {%- for requirement in requirements.latest_values() if requirement.enum_id != requirement.enum_id_version %}
+    {{ requirement.enum_id }} = {{ requirement.enum_id_version }}
+    {%- endfor %}

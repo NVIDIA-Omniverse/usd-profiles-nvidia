@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+from dataclasses import dataclass
+from enum import Enum
+
+
+from ._requirements import Requirement, Requirements
+
+
+@dataclass(frozen=True)
+class Feature:
+    """
+    Args:
+        id: The id of the feature
+        version: The version of the feature
+        path: The path to the feature
+        requirements: The requirements of the feature
+    """
+    id: str
+    version: str
+    path: str
+    requirements: list[Requirement]
+
+class Features(Feature, Enum):
+    """
+    An enumeration of all features.
+    """
+    {%- for feature in features %}
+    {{ feature.enum_id_version }} = (
+        "{{ feature.namespaced_id }}",
+        "{{ feature.version }}", 
+        {{ feature.metadata.html_path | tojson if feature.metadata and feature.metadata.html_path else 'None' }},
+        [
+            {%- for requirement in requirements.find_all(features.resolve_requirements(feature)) %}
+            Requirements.{{ requirement.enum_id_version }},
+            {%- endfor %}
+        ]
+    )
+    {%- endfor %}
+    # Aliases for latest values
+    {%- for feature in features.latest_values() if feature.enum_id != feature.enum_id_version %}
+    {{ feature.enum_id }} = {{ feature.enum_id_version }}
+    {%- endfor %}

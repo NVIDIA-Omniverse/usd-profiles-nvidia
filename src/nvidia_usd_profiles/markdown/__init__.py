@@ -14,10 +14,10 @@ __all__ = [
     "CapabilitiesParser",
     "CapabilityParser",
     "DocumentParser",
+    "FeatureParser",
+    "FeaturesParser",
     "ParameterParser",
     "ProfilesParser",
     "RequirementsParser",
-    "FeatureParser",
-    "FeaturesParser",
     "SpecificationsParser",
 ]

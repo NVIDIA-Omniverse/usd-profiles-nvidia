@@ -5,8 +5,6 @@
 from __future__ import annotations
 
 from argparse import ArgumentParser
-from collections.abc import Callable
-from typing import Any
 
 
 def add_arguments(parser: ArgumentParser, required: bool = True) -> None:
@@ -61,40 +59,3 @@ def generate(docs_root: str, destination_dir: str, package_name: str, reverse_do
         reverse_domain=reverse_domain,
     )
     generator.generate()
-
-
-def run_repo_tool(options: Any, config: dict[str, Any]) -> None:
-    """
-    Run repo tool.
-
-    Args:
-        options: Options.
-        config: Config.
-    """
-    python_config: dict[str, Any] = config.get("repo_profiles_codegen", {}).get("python", {})
-    docs_root: str = options.docs_root or python_config.get("docs_root", "")
-    destination_dir: str = options.destination_dir or python_config.get("destination_dir", "")
-
-    # Resolve package_name and reverse_domain, with --namespace as deprecated fallback.
-    namespace: str = getattr(options, "namespace", None) or python_config.get("namespace", "")
-    package_name: str = getattr(options, "package_name", None) or python_config.get("package_name", "") or namespace
-    reverse_domain: str = getattr(options, "reverse_domain", None) or python_config.get("reverse_domain", "")
-
-    from nvidia_usd_profiles import validate_repo_dependencies
-
-    validate_repo_dependencies()
-    generate(docs_root, destination_dir, package_name, reverse_domain)
-
-
-def setup_repo_tool(parser: ArgumentParser, config: dict[str, Any]) -> Callable[[Any, dict[str, Any]], None] | None:
-    """
-    Setup repo tool.
-    """
-    parser.description = "Generate Python from Profiles Markdown files."
-    add_arguments(parser, required=False)
-
-    tool_config = config.get("repo_profiles_codegen", {})
-    if not tool_config.get("enabled", True):
-        return None
-
-    return run_repo_tool

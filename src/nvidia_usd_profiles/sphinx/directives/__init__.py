@@ -5,4 +5,4 @@
 from ._features_table import setup as features_table_setup
 from ._requirements_table import setup as requirements_table_setup
 
-__all__ = ["requirements_table_setup", "features_table_setup"]
+__all__ = ["features_table_setup", "requirements_table_setup"]

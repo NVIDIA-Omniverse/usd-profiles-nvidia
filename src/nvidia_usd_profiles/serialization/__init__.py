@@ -5,4 +5,4 @@
 from ._json_decoder import JsonDeserialize
 from ._json_encoder import JsonSerialize
 
-__all__ = ["JsonSerialize", "JsonDeserialize"]
+__all__ = ["JsonDeserialize", "JsonSerialize"]

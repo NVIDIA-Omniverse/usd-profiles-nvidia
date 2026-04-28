@@ -40,7 +40,12 @@ Also copies:
 
 4. Update `pyproject.toml` version to match the value in `VERSION`.
 
-5. Run `/test` to verify the wheel builds and tests pass.
+5. Fix linter errors (upstream doesn't sort `__all__`, ruff RUF022 requires it):
+   ```
+   .\repo.bat uv -- run --no-project --with ruff ruff check src/ --fix
+   ```
+
+6. Run `/test` to verify the wheel builds and tests pass.
 
 6. Commit and push, then open an MR to `main`.
 

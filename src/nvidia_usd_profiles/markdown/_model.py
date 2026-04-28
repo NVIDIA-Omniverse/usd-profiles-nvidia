@@ -9,16 +9,16 @@ from dataclasses import dataclass, field
 from typing import ClassVar
 
 __all__ = [
-    "TableCell",
-    "TableRow",
-    "Table",
-    "Fence",
-    "Link",
     "Bullet",
     "BulletList",
+    "Document",
+    "Fence",
+    "Link",
     "Section",
     "Sections",
-    "Document",
+    "Table",
+    "TableCell",
+    "TableRow",
 ]
 
 

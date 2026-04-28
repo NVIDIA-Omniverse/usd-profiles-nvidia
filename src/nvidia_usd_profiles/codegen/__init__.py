@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-from ._cli import setup_repo_tool
 from ._py_generate import PythonGenerator
 
-__all__ = ["PythonGenerator", "setup_repo_tool"]
+__all__ = ["PythonGenerator"]

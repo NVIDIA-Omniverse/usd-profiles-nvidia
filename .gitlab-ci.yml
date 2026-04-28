@@ -54,7 +54,7 @@ stages:
       when: never
     - if: $CI_COMMIT_REF_PROTECTED == "true"
       changes:
-        - VERSION.md
+        - VERSION
 
 # ==============================================================================================================
 # Pre-build Checks
@@ -90,8 +90,8 @@ check-version:
     - .ipp_lnx_x86_64_cpu_micro
   needs: []
   script:
-    - echo "VERSION=v$(cat VERSION.md)" > dotenv.env
-    - echo "VERSION_NUMBER=$(cat VERSION.md)" >> dotenv.env
+    - echo "VERSION=v$(cat VERSION)" > dotenv.env
+    - echo "VERSION_NUMBER=$(cat VERSION)" >> dotenv.env
     - cat dotenv.env
   artifacts:
     reports:

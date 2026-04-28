@@ -12,7 +12,7 @@ Copies all Python source files (except root-level `__init__.py`, `__main__.py`, 
 | `omni.usd_profiles` (catch-all) | `nvidia_usd_profiles` |
 
 Also copies:
-- `C:\sources\open-usd-profiles\tests\` (test files + resources) → `tests/`, except `test_config.py`
+- `C:\sources\open-usd-profiles\tests\` (test files + resources) → `tests/`, except `test_config.py` and `conftest.py`
 - `C:\sources\open-usd-profiles\CHANGELOG.md` → `CHANGELOG.md`
 - `C:\sources\open-usd-profiles\VERSION` → `VERSION`
 
@@ -21,10 +21,13 @@ Also copies:
 - `__main__.py` — keep as-is
 - `_repo_tool.py` / `_config.py` — repo-tool infrastructure specific to open-usd-profiles; not applicable here
 - `test_config.py` — tests `_config.py`/`_repo_tool.py` which are not synced
+- `conftest.py` — upstream calls `validate_repo_dependencies()`, a repo-tool concept not used here
 
 **Manually maintained** (not overwritten by this script):
 - `src/nvidia_usd_profiles/__init__.py` — uses `importlib.metadata.version("nvidia-usd-profiles")`
 - `src/nvidia_usd_profiles/__main__.py` — keep as-is
+
+**Post-sync patch for `_cli.py`**: upstream `_cli.py` contains `run_repo_tool` and `setup_repo_tool` which are repo-tool infrastructure. The migration script strips them automatically.
 
 ## Steps
 
@@ -47,12 +50,13 @@ Also copies:
 
 6. Run `/test` to verify the wheel builds and tests pass.
 
-6. Commit and push, then open an MR to `main`.
+7. Commit and push, then open an MR to `main`.
 
 ## Migration script
 
 ```python
 from pathlib import Path
+import re
 import shutil
 
 SRC = Path("C:/sources/open-usd-profiles/omni/usd_profiles")
@@ -66,7 +70,7 @@ def transform(content: str) -> str:
     return content
 
 ROOT_SKIP = {"__init__.py", "__main__.py", "_repo_tool.py", "_config.py"}
-TEST_SKIP = {"test_config.py"}
+TEST_SKIP = {"test_config.py", "conftest.py"}
 
 def sync_tree(src_dir: Path, dst_dir: Path, is_root: bool = False) -> None:
     dst_dir.mkdir(parents=True, exist_ok=True)
@@ -80,6 +84,12 @@ def sync_tree(src_dir: Path, dst_dir: Path, is_root: bool = False) -> None:
 
 # --- core source files and subpackages ---
 sync_tree(SRC, DST, is_root=True)
+
+# --- strip repo-tool functions from _cli.py ---
+cli_path = DST / "_cli.py"
+cli_content = cli_path.read_text(encoding="utf-8")
+cli_content = re.sub(r'\n\ndef run_repo_tool\b.*', '', cli_content, flags=re.DOTALL)
+cli_path.write_text(cli_content, encoding="utf-8")
 
 # --- top-level tests and resources ---
 tests_root = Path("tests")

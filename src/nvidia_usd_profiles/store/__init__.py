@@ -12,10 +12,10 @@ from ._specifications import SpecificationsStore
 
 __all__ = [
     "CapabilityStore",
-    "ExampleStore",
+    "RequirementStore",
+    "ProfileStore",
     "FeatureStore",
     "ParameterStore",
-    "ProfileStore",
-    "RequirementStore",
+    "ExampleStore",
     "SpecificationsStore",
 ]

@@ -5,4 +5,4 @@
 from ._static import setup as static_setup
 from ._style import setup as style_setup
 
-__all__ = ["static_setup", "style_setup"]
+__all__ = ["style_setup", "static_setup"]

@@ -13,6 +13,8 @@ Copies all Python source files (except root-level `__init__.py`, `__main__.py`, 
 
 Also copies:
 - `C:\sources\open-usd-profiles\tests\` (test files + resources) → `tests/`, except `test_config.py`
+- `C:\sources\open-usd-profiles\CHANGELOG.md` → `CHANGELOG.md`
+- `C:\sources\open-usd-profiles\VERSION` → `VERSION`
 
 **Not copied** (intentionally):
 - `__init__.py` — this repo has its own, using `importlib.metadata` for version
@@ -30,9 +32,17 @@ Also copies:
 
 2. Run the migration script below in a Python shell from the repo root.
 
-3. Run `/test` to verify the wheel builds and tests pass.
+3. Copy `CHANGELOG.md` and `VERSION`:
+   ```bash
+   cp C:/sources/open-usd-profiles/CHANGELOG.md CHANGELOG.md
+   cp C:/sources/open-usd-profiles/VERSION VERSION
+   ```
 
-4. Commit and push, then open an MR to `main`.
+4. Update `pyproject.toml` version to match the value in `VERSION`.
+
+5. Run `/test` to verify the wheel builds and tests pass.
+
+6. Commit and push, then open an MR to `main`.
 
 ## Migration script
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.13.1] - 28/04/2026
+### Removed
+- `setup_repo_tool` / `run_repo_tool` from `codegen` — repo-tool infrastructure not applicable to this pip package.
+
 ## [1.13.0] - 23/04/2026
 ### Added
 - Support for `com.nvidia.*` reverse-domain naming convention in codegen (`--reverse-domain`).

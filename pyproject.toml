@@ -26,7 +26,7 @@ Homepage = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
 Documentation = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/nvidia_usd_profiles"]
+packages = ["src/nvidia_usd_profiles", "src/omni"]
 artifacts = [
     "src/nvidia_usd_profiles/capabilities/**/*",
 ]

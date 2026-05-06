@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from nvidia_usd_profiles.markdown import DocumentParser
+from usd_profiles_nvidia.markdown import DocumentParser
 
 
 class TestDocumentParser(unittest.TestCase):

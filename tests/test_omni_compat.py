@@ -7,7 +7,7 @@ import importlib.util
 import os
 import unittest
 
-import nvidia_usd_profiles
+import usd_profiles_nvidia
 
 
 class TestOmniCompat(unittest.TestCase):
@@ -15,12 +15,12 @@ class TestOmniCompat(unittest.TestCase):
     def test_root_shim_exports_version(self):
         import omni.usd_profiles
 
-        self.assertEqual(omni.usd_profiles.__version__, nvidia_usd_profiles.__version__)
+        self.assertEqual(omni.usd_profiles.__version__, usd_profiles_nvidia.__version__)
         self.assertEqual(omni.usd_profiles.__all__, ["__version__"])
 
         namespace: dict[str, str] = {}
         exec("from omni.usd_profiles import *", namespace)
-        self.assertEqual(namespace["__version__"], nvidia_usd_profiles.__version__)
+        self.assertEqual(namespace["__version__"], usd_profiles_nvidia.__version__)
 
     def test_public_subpackage_shims_export_same_objects(self):
         module_exports = {
@@ -35,7 +35,7 @@ class TestOmniCompat(unittest.TestCase):
         for module_name, export_names in module_exports.items():
             with self.subTest(module_name=module_name):
                 old_module = importlib.import_module(f"omni.usd_profiles.{module_name}")
-                new_module = importlib.import_module(f"nvidia_usd_profiles.{module_name}")
+                new_module = importlib.import_module(f"usd_profiles_nvidia.{module_name}")
 
                 self.assertIs(old_module.__all__, new_module.__all__)
                 for export_name in export_names:
@@ -43,7 +43,7 @@ class TestOmniCompat(unittest.TestCase):
 
     def test_codegen_main_shim_uses_new_entry_point(self):
         old_main = importlib.import_module("omni.usd_profiles.codegen.__main__")
-        new_main = importlib.import_module("nvidia_usd_profiles.codegen.__main__")
+        new_main = importlib.import_module("usd_profiles_nvidia.codegen.__main__")
 
         self.assertIs(old_main.main, new_main.main)
 
@@ -64,7 +64,7 @@ class TestOmniCompat(unittest.TestCase):
         for module_name, export_names in module_exports.items():
             with self.subTest(module_name=module_name):
                 old_module = importlib.import_module(f"omni.usd_profiles.sphinx.{module_name}")
-                new_module = importlib.import_module(f"nvidia_usd_profiles.sphinx.{module_name}")
+                new_module = importlib.import_module(f"usd_profiles_nvidia.sphinx.{module_name}")
 
                 for export_name in export_names:
                     self.assertIs(getattr(old_module, export_name), getattr(new_module, export_name))

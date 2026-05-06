@@ -2,6 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-from nvidia_usd_profiles.sphinx.ext import setup
+from usd_profiles_nvidia.sphinx.ext import setup
 
 __all__ = ["setup"]

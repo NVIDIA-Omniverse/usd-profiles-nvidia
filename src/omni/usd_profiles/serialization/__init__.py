@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import nvidia_usd_profiles.serialization
-from nvidia_usd_profiles.serialization import *  # noqa: F403
+import usd_profiles_nvidia.serialization
+from usd_profiles_nvidia.serialization import *  # noqa: F403
 
-__all__ = nvidia_usd_profiles.serialization.__all__
+__all__ = usd_profiles_nvidia.serialization.__all__

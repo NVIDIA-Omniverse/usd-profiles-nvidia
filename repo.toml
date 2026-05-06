@@ -6,8 +6,8 @@
 logging = "warn"
 
 # Reposiory Name. It is used for solution name and final package name
-name = "nvidia-usd-profiles"
-repo_url = "https://gitlab-master.nvidia.com/omniverse/usd-rels/nvidia-usd-profiles"
+name = "usd-profiles-nvidia"
+repo_url = "https://gitlab-master.nvidia.com/omniverse/usd-rels/usd-profiles-nvidia"
 
 [repo.folders]
 version_file = "${root}/VERSION.md"
@@ -62,5 +62,5 @@ files.include = [
     "tests/**/*.py",
 ]
 files.exclude."++" = [
-    "src/nvidia_usd_profiles/capabilities/*",
+    "src/usd_profiles_nvidia/capabilities/*",
 ]

@@ -39,7 +39,7 @@ class TestPythonGenerator(unittest.TestCase):
 
     def test_codegen_py(self):
         """Test basic code generation (legacy, no reverse_domain)."""
-        from nvidia_usd_profiles.codegen import PythonGenerator
+        from usd_profiles_nvidia.codegen import PythonGenerator
 
         docs_root = os.path.join(os.path.dirname(__file__), "resources", "simple-spec")
         with TemporaryDirectory() as tmpdirname:
@@ -69,7 +69,7 @@ class TestPythonGenerator(unittest.TestCase):
 
     def test_codegen_with_parameters(self):
         """Test code generation with parameters (legacy, no reverse_domain)."""
-        from nvidia_usd_profiles.codegen import PythonGenerator
+        from usd_profiles_nvidia.codegen import PythonGenerator
 
         docs_root = os.path.join(os.path.dirname(__file__), "resources", "param-test-spec")
         with TemporaryDirectory() as tmpdirname:
@@ -105,7 +105,7 @@ class TestPythonGenerator(unittest.TestCase):
 
     def test_codegen_with_reverse_domain(self):
         """reverse_domain auto-qualifies short names; enum members have the prefix stripped."""
-        from nvidia_usd_profiles.codegen import PythonGenerator
+        from usd_profiles_nvidia.codegen import PythonGenerator
 
         docs_root = os.path.join(os.path.dirname(__file__), "resources", "namespace-spec")
         with TemporaryDirectory() as tmpdirname:

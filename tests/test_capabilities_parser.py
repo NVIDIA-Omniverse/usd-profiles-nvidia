@@ -5,8 +5,8 @@
 import os
 import unittest
 
-from nvidia_usd_profiles.markdown import CapabilitiesParser
-from nvidia_usd_profiles.model import Compatibility, Tag, Version
+from usd_profiles_nvidia.markdown import CapabilitiesParser
+from usd_profiles_nvidia.model import Compatibility, Tag, Version
 
 
 class TestCapabilitiesParser(unittest.TestCase):

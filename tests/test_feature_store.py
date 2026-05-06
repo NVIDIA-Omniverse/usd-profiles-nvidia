@@ -4,8 +4,8 @@
 
 import unittest
 
-from nvidia_usd_profiles.model import Feature, IdVersion, Version
-from nvidia_usd_profiles.store import FeatureStore
+from usd_profiles_nvidia.model import Feature, IdVersion, Version
+from usd_profiles_nvidia.store import FeatureStore
 
 
 class TestFeatureStore(unittest.TestCase):

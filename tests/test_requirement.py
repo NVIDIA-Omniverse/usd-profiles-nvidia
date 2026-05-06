@@ -4,7 +4,7 @@
 
 import unittest
 
-from nvidia_usd_profiles.model import Requirement, Version
+from usd_profiles_nvidia.model import Requirement, Version
 
 
 class TestRequirement(unittest.TestCase):

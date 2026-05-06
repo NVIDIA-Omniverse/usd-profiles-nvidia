@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from nvidia_usd_profiles.model import Compatibility, Tag
+from usd_profiles_nvidia.model import Compatibility, Tag
 
 
 class TestFeaturesTableDirective(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestFeaturesTableDirective(unittest.TestCase):
         with open(os.path.join(self.src_dir, "conf.py"), "w") as f:
             f.write("extensions = [" + os.linesep)
             f.write("    'myst_parser'," + os.linesep)
-            f.write("    'nvidia_usd_profiles.sphinx.ext'," + os.linesep)
+            f.write("    'usd_profiles_nvidia.sphinx.ext'," + os.linesep)
             f.write("]" + os.linesep)
             f.write("myst_enable_extensions = ['colon_fence']" + os.linesep)
 

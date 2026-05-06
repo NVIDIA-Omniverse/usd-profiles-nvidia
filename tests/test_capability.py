@@ -4,7 +4,7 @@
 
 import unittest
 
-from nvidia_usd_profiles.model import Capability, Version
+from usd_profiles_nvidia.model import Capability, Version
 
 
 class TestCapability(unittest.TestCase):

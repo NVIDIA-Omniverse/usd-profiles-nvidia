@@ -1,17 +1,17 @@
-# NVIDIA USD Profiles Notices
+# USD Profiles NVIDIA Notices
 
 ## Apache 2.0 License
 
-The NVIDIA USD Profiles Python package is provided under the [Apache License, Version 2.0](../LICENSE).
+The USD Profiles NVIDIA Python package is provided under the [Apache License, Version 2.0](../LICENSE).
 
 ## Runtime License Notices
 
-These licenses pertain to the NVIDIA USD Profiles Python package.
+These licenses pertain to the USD Profiles NVIDIA Python package.
 
 This repository does not use or redistribute generated `usd-deps` license files. The individual license entries below
 therefore link to the upstream projects directly.
 
-- [NVIDIA USD Profiles](#nvidia-usd-profiles-license)
+- [USD Profiles NVIDIA](#usd-profiles-nvidia-license)
 - [Jinja2](#jinja2-license)
 - [markdown-it-py](#markdown-it-py-license)
 - [Tomli](#tomli-license)
@@ -21,7 +21,7 @@ therefore link to the upstream projects directly.
 
 ## Individual Licenses
 
-### NVIDIA USD Profiles License
+### USD Profiles NVIDIA License
 
 - [Apache License, Version 2.0](../LICENSE)
 

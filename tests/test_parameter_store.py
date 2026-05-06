@@ -4,12 +4,12 @@
 
 import unittest
 
-from nvidia_usd_profiles.model import (
+from usd_profiles_nvidia.model import (
     Parameter,
     ParameterType,
     Requirement,
 )
-from nvidia_usd_profiles.store import ParameterStore
+from usd_profiles_nvidia.store import ParameterStore
 
 
 class TestParameterStore(unittest.TestCase):

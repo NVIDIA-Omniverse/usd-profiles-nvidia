@@ -5,8 +5,8 @@
 import unittest
 from pathlib import Path
 
-from nvidia_usd_profiles.markdown import RequirementsParser
-from nvidia_usd_profiles.model import Compatibility, Tag, Version
+from usd_profiles_nvidia.markdown import RequirementsParser
+from usd_profiles_nvidia.model import Compatibility, Tag, Version
 
 
 class TestRequirementsParser(unittest.TestCase):
@@ -65,7 +65,7 @@ class TestRequirementsParser(unittest.TestCase):
         base_dir = Path(__file__).parent / "resources" / "invalid-specs"
         parser = RequirementsParser(root_dir=str(base_dir), paths=[str(base_dir / "requirements")])
 
-        with self.assertLogs("nvidia_usd_profiles.markdown._requirements", level="WARNING") as cm:
+        with self.assertLogs("usd_profiles_nvidia.markdown._requirements", level="WARNING") as cm:
             parser.parse()
         self.assertRegex(cm.output[0], r"Assigned value.*'D'.*not within declared enum values")
 
@@ -73,6 +73,6 @@ class TestRequirementsParser(unittest.TestCase):
         base_dir = Path(__file__).parent / "resources" / "multi-table-spec"
         parser = RequirementsParser(root_dir=str(base_dir), paths=[str(base_dir / "requirements")])
 
-        with self.assertLogs("nvidia_usd_profiles.markdown._requirements", level="WARNING") as cm:
+        with self.assertLogs("usd_profiles_nvidia.markdown._requirements", level="WARNING") as cm:
             parser.parse()
         self.assertRegex(cm.output[0], r"Multiple parameter tables.*Expected 1 table, found 2")

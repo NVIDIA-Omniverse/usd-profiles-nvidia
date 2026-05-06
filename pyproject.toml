@@ -1,6 +1,6 @@
 [project]
-name = "nvidia-usd-profiles"
-version = "1.14.0"
+name = "usd-profiles-nvidia"
+version = "1.14.1"
 description = "NVIDIA OpenUSD Profiles"
 authors = [
     {name = "NVIDIA"},
@@ -26,9 +26,9 @@ Homepage = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
 Documentation = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/nvidia_usd_profiles", "src/omni"]
+packages = ["src/usd_profiles_nvidia", "src/omni"]
 artifacts = [
-    "src/nvidia_usd_profiles/capabilities/**/*",
+    "src/usd_profiles_nvidia/capabilities/**/*",
 ]
 
 [build-system]

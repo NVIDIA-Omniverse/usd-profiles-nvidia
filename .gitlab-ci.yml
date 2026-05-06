@@ -11,7 +11,7 @@ include:
     ref: v1_latest
 
 variables:
-  MIRROR_REPO_ID: "nvidia-usd-profiles"
+  MIRROR_REPO_ID: "usd-profiles-nvidia"
 
 .default-rules:
   rules:
@@ -120,7 +120,7 @@ test-pip:
     - job: build-pip
       artifacts: true
   script:
-    - ./repo.sh uv -- run --no-project --with ./dist/nvidia_usd_profiles-*.whl --with "sphinx>=7.2.6" --with "myst-parser>=4.0.0" python -m unittest discover -s tests
+    - ./repo.sh uv -- run --no-project --with ./dist/usd_profiles_nvidia-*.whl --with "sphinx>=7.2.6" --with "myst-parser>=4.0.0" python -m unittest discover -s tests
 
 # ==============================================================================================================
 # Publish Jobs
@@ -180,7 +180,7 @@ release_job:
   script:
     - echo "Creating release"
   release:
-    name: 'NVIDIA USD Profiles ${VERSION}'
+    name: 'USD Profiles NVIDIA ${VERSION}'
     description: CHANGELOG.md
     tag_name: '${VERSION}'
     ref: '$CI_COMMIT_SHA'

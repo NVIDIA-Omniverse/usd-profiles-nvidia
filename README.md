@@ -191,9 +191,17 @@ Use roles for inline tags and compatibility badges:
 
 ## Requirements
 
+Core package:
+
 - Python 3.10 or later
 - Jinja2 3.1.5 or later
+- markdown-it-py 3.0.0 or later
+- tomli 2.0.0 or later for Python versions earlier than 3.11
+
+Optional Sphinx integration (`usd-profiles-nvidia[sphinx]`):
+
 - Sphinx 7.2.6 or later
+- myst-parser 4.0.0 or later
 
 ## License
 

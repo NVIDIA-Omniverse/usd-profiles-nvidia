@@ -1,4 +1,4 @@
-# NVIDIA USD Profiles
+# USD Profiles NVIDIA
 
 A framework for defining and managing [OpenUSD](https://openusd.org) asset profiles, capabilities, and requirements.
 This library provides tools for parsing profile specifications from Markdown, generating Python code,
@@ -17,13 +17,13 @@ and integrating with Sphinx documentation.
 Install from PyPI:
 
 ```bash
-pip install nvidia-usd-profiles
+pip install usd-profiles-nvidia
 ```
 
 For Sphinx integration (directives and roles for profile documentation), install the optional dependency:
 
 ```bash
-pip install nvidia-usd-profiles[sphinx]
+pip install usd-profiles-nvidia[sphinx]
 ```
 
 ## Basic Usage
@@ -116,7 +116,7 @@ Minimal profile with one feature.
 Then run:
 
 ```bash
-python -m nvidia_usd_profiles.codegen --docs-root specs --destination-dir output --namespace mypackage.profiles
+python -m usd_profiles_nvidia.codegen --docs-root specs --destination-dir output --namespace mypackage.profiles
 ```
 
 Generated code will be under `output/mypackage/profiles/`.
@@ -161,7 +161,7 @@ Add to your Sphinx `conf.py`:
 
 ```python
 extensions = [
-    "nvidia_usd_profiles.sphinx.ext",
+    "usd_profiles_nvidia.sphinx.ext",
 ]
 ```
 

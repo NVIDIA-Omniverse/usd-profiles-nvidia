@@ -4,7 +4,7 @@
 
 import unittest
 
-from nvidia_usd_profiles.model import Feature, Metadata, Version
+from usd_profiles_nvidia.model import Feature, Metadata, Version
 
 
 class TestFeature(unittest.TestCase):

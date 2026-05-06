@@ -4,7 +4,7 @@
 
 from pkgutil import extend_path
 
-import nvidia_usd_profiles.sphinx
+import usd_profiles_nvidia.sphinx
 
 __path__ = extend_path(__path__, __name__)
 

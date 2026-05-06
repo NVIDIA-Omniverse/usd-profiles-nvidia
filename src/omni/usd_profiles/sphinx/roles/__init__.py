@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import nvidia_usd_profiles.sphinx.roles
-from nvidia_usd_profiles.sphinx.roles import *  # noqa: F403
+import usd_profiles_nvidia.sphinx.roles
+from usd_profiles_nvidia.sphinx.roles import *  # noqa: F403
 
-__all__ = nvidia_usd_profiles.sphinx.roles.__all__
+__all__ = usd_profiles_nvidia.sphinx.roles.__all__

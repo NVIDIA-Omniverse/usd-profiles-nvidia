@@ -1,8 +1,12 @@
 # Changelog
 
+## [1.14.1] - 06/05/2026
+### Fixed
+- Update project name.
+
 ## [1.14.0] - 05/05/2026
 ### Added
-- `omni.usd_profiles` compatibility shims for the renamed `nvidia_usd_profiles` Python namespace.
+- `omni.usd_profiles` compatibility shims for the renamed `usd_profiles_nvidia` Python namespace.
 
 ## [1.13.1] - 28/04/2026
 ### Removed

@@ -5,8 +5,8 @@
 import unittest
 from pathlib import Path
 
-from nvidia_usd_profiles.markdown import ProfilesParser
-from nvidia_usd_profiles.model import IdVersion, Version
+from usd_profiles_nvidia.markdown import ProfilesParser
+from usd_profiles_nvidia.model import IdVersion, Version
 
 
 class TestProfilesParser(unittest.TestCase):

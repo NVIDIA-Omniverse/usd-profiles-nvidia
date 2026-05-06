@@ -19,7 +19,7 @@ class TestWheel(unittest.TestCase):
                 [
                     sys.executable,
                     "-m",
-                    "nvidia_usd_profiles.codegen",
+                    "usd_profiles_nvidia.codegen",
                     "--docs-root",
                     "tests/resources/simple-spec",
                     "--destination-dir",

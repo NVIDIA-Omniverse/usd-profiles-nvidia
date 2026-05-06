@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import nvidia_usd_profiles.sphinx.directives
-from nvidia_usd_profiles.sphinx.directives import *  # noqa: F403
+import usd_profiles_nvidia.sphinx.directives
+from usd_profiles_nvidia.sphinx.directives import *  # noqa: F403
 
-__all__ = nvidia_usd_profiles.sphinx.directives.__all__
+__all__ = usd_profiles_nvidia.sphinx.directives.__all__

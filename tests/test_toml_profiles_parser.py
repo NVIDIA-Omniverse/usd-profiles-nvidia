@@ -6,9 +6,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from nvidia_usd_profiles.markdown import ProfilesParser
-from nvidia_usd_profiles.model import IdVersion, Version
-from nvidia_usd_profiles.toml import TomlProfilesParser
+from usd_profiles_nvidia.markdown import ProfilesParser
+from usd_profiles_nvidia.model import IdVersion, Version
+from usd_profiles_nvidia.toml import TomlProfilesParser
 
 
 class TestTomlProfilesParser(unittest.TestCase):

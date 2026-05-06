@@ -4,7 +4,7 @@
 
 import unittest
 
-from nvidia_usd_profiles.model import IdVersion, Version
+from usd_profiles_nvidia.model import IdVersion, Version
 
 
 class TestVersion(unittest.TestCase):

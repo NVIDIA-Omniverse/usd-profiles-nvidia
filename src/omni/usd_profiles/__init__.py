@@ -4,7 +4,7 @@
 
 from pkgutil import extend_path
 
-from nvidia_usd_profiles import __version__
+from usd_profiles_nvidia import __version__
 
 __path__ = extend_path(__path__, __name__)
 

@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 def get_version_from_wheel(wheel_name):
     """Extract version from wheel filename."""
-    match = re.search(r"^nvidia_usd_profiles-([^-]+)-", wheel_name)
+    match = re.search(r"^usd_profiles_nvidia-([^-]+)-", wheel_name)
     if not match:
         raise ValueError(f"Could not extract version from wheel filename: {wheel_name!r}")
     return match.group(1)
@@ -51,13 +51,13 @@ def register_release_with_kitmaker(wheel_filename: str, version: str, dry_run: b
         return False
 
     payload = {
-        "project_name": "nvidia-usd-profiles",
+        "project_name": "usd-profiles-nvidia",
         "payload": [
             {
                 "pic": "miguelh@nvidia.com",
                 "job_type": "wheel-release-job",
                 "publish_to": "both_devzone_pypi",
-                "url": f"https://urm.nvidia.com/artifactory/ct-omniverse-pypi/nvidia-usd-profiles/{version}/{wheel_filename}",
+                "url": f"https://urm.nvidia.com/artifactory/ct-omniverse-pypi/usd-profiles-nvidia/{version}/{wheel_filename}",
                 "size": "small",
                 "upload": not dry_run,
             }

@@ -5,8 +5,8 @@
 import unittest
 from pathlib import Path
 
-from nvidia_usd_profiles.markdown import RequirementsParser
-from nvidia_usd_profiles.model import ExampleResult, ExampleSnippetLanguage
+from usd_profiles_nvidia.markdown import RequirementsParser
+from usd_profiles_nvidia.model import ExampleResult, ExampleSnippetLanguage
 
 
 class TestExamplesParser(unittest.TestCase):

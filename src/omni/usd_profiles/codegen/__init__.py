@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import nvidia_usd_profiles.codegen
-from nvidia_usd_profiles.codegen import *  # noqa: F403
+import usd_profiles_nvidia.codegen
+from usd_profiles_nvidia.codegen import *  # noqa: F403
 
-__all__ = nvidia_usd_profiles.codegen.__all__
+__all__ = usd_profiles_nvidia.codegen.__all__

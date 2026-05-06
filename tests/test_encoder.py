@@ -5,7 +5,7 @@
 import json
 import unittest
 
-from nvidia_usd_profiles.model import (
+from usd_profiles_nvidia.model import (
     Capability,
     Example,
     ExampleResult,
@@ -20,7 +20,7 @@ from nvidia_usd_profiles.model import (
     Requirement,
     Version,
 )
-from nvidia_usd_profiles.serialization import (
+from usd_profiles_nvidia.serialization import (
     JsonDeserialize,
     JsonSerialize,
 )

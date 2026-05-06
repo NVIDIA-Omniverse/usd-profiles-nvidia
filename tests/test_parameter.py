@@ -4,8 +4,8 @@
 
 import unittest
 
-from nvidia_usd_profiles.markdown import ParameterParser
-from nvidia_usd_profiles.model import Parameter, ParameterType
+from usd_profiles_nvidia.markdown import ParameterParser
+from usd_profiles_nvidia.model import Parameter, ParameterType
 
 
 class TestParameter(unittest.TestCase):

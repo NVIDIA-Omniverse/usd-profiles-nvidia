@@ -4,7 +4,7 @@
 
 import unittest
 
-from nvidia_usd_profiles.model import Naming, Version
+from usd_profiles_nvidia.model import Naming, Version
 
 
 class TestNaming(unittest.TestCase):

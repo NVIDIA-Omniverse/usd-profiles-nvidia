@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import nvidia_usd_profiles.model
-from nvidia_usd_profiles.model import *  # noqa: F403
+import usd_profiles_nvidia.model
+from usd_profiles_nvidia.model import *  # noqa: F403
 
-__all__ = nvidia_usd_profiles.model.__all__
+__all__ = usd_profiles_nvidia.model.__all__

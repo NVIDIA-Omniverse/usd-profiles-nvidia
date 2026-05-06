@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import nvidia_usd_profiles.markdown
-from nvidia_usd_profiles.markdown import *  # noqa: F403
+import usd_profiles_nvidia.markdown
+from usd_profiles_nvidia.markdown import *  # noqa: F403
 
-__all__ = nvidia_usd_profiles.markdown.__all__
+__all__ = usd_profiles_nvidia.markdown.__all__

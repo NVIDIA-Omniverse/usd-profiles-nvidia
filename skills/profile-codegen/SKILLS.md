@@ -30,10 +30,10 @@ Use uv to run codegen without creating a local virtual environment:
 
     uv run \
       --no-project \
-      --with usd-profiles-nvidia==1.14.1 \
+      --with usd-profiles-nvidia \
       python -m usd_profiles_nvidia.codegen --help
 
-The example project file lists the same package version:
+The example project file lists the package dependency:
 
 > Source: `examples/python/profile-codegen/pyproject.toml`
 
@@ -41,7 +41,7 @@ The example project file lists the same package version:
 
 Install the codegen package into an environment you control:
 
-    python -m pip install usd-profiles-nvidia==1.14.1
+    python -m pip install usd-profiles-nvidia
 
 Then run `python -m usd_profiles_nvidia.codegen` with the same arguments shown below.
 
@@ -65,7 +65,7 @@ From the repository root:
 
     uv run \
       --no-project \
-      --with usd-profiles-nvidia==1.14.1 \
+      --with usd-profiles-nvidia \
       python -m usd_profiles_nvidia.codegen \
         --docs-root examples/python/profile-codegen/specs \
         --destination-dir _build/profile-codegen \

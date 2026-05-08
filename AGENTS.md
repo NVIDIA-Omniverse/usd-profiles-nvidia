@@ -35,7 +35,7 @@ Primary use case: author structured profile specs, then generate importable Pyth
 ### Code Generation (uv)
 
   * Generate the minimal example:
-    * `uv run --no-project --with usd-profiles-nvidia==1.14.1 python -m usd_profiles_nvidia.codegen --docs-root examples/python/profile-codegen/specs --destination-dir _build/profile-codegen --package-name example_profiles`
+    * `uv run --no-project --with usd-profiles-nvidia python -m usd_profiles_nvidia.codegen --docs-root examples/python/profile-codegen/specs --destination-dir _build/profile-codegen --package-name example_profiles`
   * Generated files appear under `_build/profile-codegen/example_profiles`.
 
 ### Tests

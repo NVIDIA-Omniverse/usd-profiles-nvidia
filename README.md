@@ -18,7 +18,7 @@ AI coding agents should start with [AGENTS.md](AGENTS.md) for repository context
 Task-specific guidance lives in [skills/](skills/), including the profile code generation workflow in
 [skills/project-setup-python/SKILLS.md](skills/project-setup-python/SKILLS.md).
 
-The runnable minimal code generation example is in [examples/python/profile-codegen/](examples/python/profile-codegen/).
+The runnable minimal code generation example is in [examples/python/minimal/](examples/python/minimal/).
 
 ## Installation
 
@@ -38,7 +38,8 @@ pip install usd-profiles-nvidia[sphinx]
 
 ### Code Generation
 
-Generate Python code from profile specifications. Create a folder (e.g. `specs/`) with this structure and the following files:
+Generate Python code from profile specifications. Create a folder (e.g. `specs/`) with this structure and the
+following files:
 
 ```
 specs/
@@ -131,9 +132,12 @@ Generated code will be under `output/mypackage/profiles/`.
 
 ### NVIDIA USD Validation integration
 
-Use the generated requirements and features with [NVIDIA USD Validation](https://pypi.org/project/nvidia-usd-validation/) to implement rule checkers and run validation.
+Use the generated requirements and features with
+[NVIDIA USD Validation](https://pypi.org/project/nvidia-usd-validation/).
+Implement rule checkers and run validation as needed.
 
-**Implement a rule** — Register requirements and implement checks (e.g. for the minimal example's single-root requirement):
+**Implement a rule** -- Register requirements and implement checks. For example, for the minimal example's single-root
+requirement:
 
 ```python
 import mypackage.profiles as cap

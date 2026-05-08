@@ -1,6 +1,8 @@
 # usd-profiles-nvidia Skills Directory
 
-This directory contains structured skill files for AI coding agents working on the usd-profiles-nvidia codebase. Each skill is a self-contained reference for a specific usd-profiles-nvidia task and points to runnable examples when possible.
+This directory contains structured skill files for AI coding agents working on the usd-profiles-nvidia codebase. Each
+skill is a self-contained reference for a specific usd-profiles-nvidia task and points to runnable examples when
+possible.
 
 ## Structure
 
@@ -41,11 +43,12 @@ Each subdirectory contains a single `SKILLS.md` file with YAML frontmatter:
 
 ## Example References
 
-Skills reference files in `examples/` instead of duplicating longer snippets inline. This keeps examples accurate as the API evolves.
+Skills reference files in `examples/` instead of duplicating longer snippets inline. This keeps examples accurate as
+the API evolves.
 
 ### Reference format in SKILLS.md
 
-    > Source: `examples/python/profile-codegen/specs/features/feature-example.md`
+    > Source: `examples/python/minimal/specs/features/feature-example.md`
 
 Agents should read the referenced file directly when they need the current example content.
 
@@ -58,4 +61,5 @@ Agents should read the referenced file directly when they need the current examp
 
 ## Updating Skills
 
-When you change codegen behavior, example specs, or command-line options that affect an existing skill, update the corresponding `SKILLS.md` to keep it accurate.
+When you change codegen behavior, example specs, or command-line options that affect an existing skill, update the
+corresponding `SKILLS.md` to keep it accurate.

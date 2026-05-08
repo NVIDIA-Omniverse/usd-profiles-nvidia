@@ -30,8 +30,10 @@ Use uv to run codegen without creating a local virtual environment:
 
     uv run \
       --no-project \
-      --with usd-profiles-nvidia \
+      --with . \
       python -m usd_profiles_nvidia.codegen --help
+
+Note: `--with .` uses the local repo; remove it to use the public package.
 
 The example project file lists the package dependency:
 
@@ -65,11 +67,13 @@ From the repository root:
 
     uv run \
       --no-project \
-      --with usd-profiles-nvidia \
+      --with . \
       python -m usd_profiles_nvidia.codegen \
         --docs-root examples/python/profile-codegen/specs \
         --destination-dir _build/profile-codegen \
         --package-name example_profiles
+
+Note: `--with .` uses the local repo; remove it to use the public package.
 
 Generated files appear under `_build/profile-codegen/example_profiles`.
 

@@ -35,7 +35,8 @@ Use uv to run codegen without creating a local virtual environment:
       --with . \
       python -m usd_profiles_nvidia.codegen --help
 
-Note: `--with .` uses the local repo; remove it to use the public package.
+Note: `--no-project` avoids using the current project implicitly, while `--with .` adds this checkout explicitly.
+To use the public package when available, replace `--with .` with `--with usd-profiles-nvidia`.
 
 The example project file lists the package dependency:
 
@@ -75,7 +76,8 @@ From the repository root:
         --destination-dir _build/minimal \
         --package-name example_profiles
 
-Note: `--with .` uses the local repo; remove it to use the public package.
+Note: `--no-project` avoids using the current project implicitly, while `--with .` adds this checkout explicitly.
+To use the public package when available, replace `--with .` with `--with usd-profiles-nvidia`.
 
 Generated files appear under `_build/minimal/example_profiles`.
 

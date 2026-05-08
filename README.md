@@ -16,7 +16,7 @@ and integrating with Sphinx documentation.
 
 AI coding agents should start with [AGENTS.md](AGENTS.md) for repository context, expectations, and common workflows.
 Task-specific guidance lives in [skills/](skills/), including the profile code generation workflow in
-[skills/profile-codegen/SKILLS.md](skills/profile-codegen/SKILLS.md).
+[skills/project-setup-python/SKILLS.md](skills/project-setup-python/SKILLS.md).
 
 The runnable minimal code generation example is in [examples/python/profile-codegen/](examples/python/profile-codegen/).
 

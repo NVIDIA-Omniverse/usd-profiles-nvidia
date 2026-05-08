@@ -1,9 +1,9 @@
 ---
-name: profile-codegen
-description: Authoring usd-profiles-nvidia requirement, capability, feature, and profile specifications and generating Python enums. Use when user asks to create profile specs, generate Python enums with usd_profiles_nvidia.codegen, or scaffold a minimal profile codegen example.
+name: project-setup-python
+description: Set up a minimal Python project for usd-profiles-nvidia profile specification authoring and Python enum generation. Use when user asks to create profile specs, generate Python enums with usd_profiles_nvidia.codegen, or scaffold a runnable Python codegen example.
 ---
 
-# Profile Codegen
+# Python Project Setup
 
 ## Overview
 

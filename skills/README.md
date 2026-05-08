@@ -7,7 +7,7 @@ This directory contains structured skill files for AI coding agents working on t
 Each subdirectory contains a single `SKILLS.md` file with YAML frontmatter:
 
     skills/
-      profile-codegen/SKILLS.md
+      project-setup-python/SKILLS.md
 
 ## SKILLS.md Format
 

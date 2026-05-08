@@ -17,7 +17,7 @@ Primary use case: author structured profile specs, then generate importable Pyth
 
   * Read `README.md` for package context, installation, and top-level examples.
   * Read `skills/README.md` to understand the skill format and maintenance expectations.
-  * Use `skills/profile-codegen/SKILLS.md` for profile spec authoring and Python enum generation.
+  * Use `skills/project-setup-python/SKILLS.md` for profile spec authoring and Python enum generation.
   * Use `examples/python/profile-codegen/` as the runnable minimal codegen reference.
 
 ## Repo Layout (High-Level)
@@ -47,7 +47,7 @@ Primary use case: author structured profile specs, then generate importable Pyth
 
 When a request maps to a known usd-profiles-nvidia workflow, go directly to the relevant skill in `skills/`:
 
-  * Profile spec authoring and Python enum codegen -> `skills/profile-codegen/SKILLS.md`
+  * Python project setup for profile spec authoring and enum codegen -> `skills/project-setup-python/SKILLS.md`
 
 If you add a repeated workflow, add a matching skill under `skills/` and reference a runnable example where practical.
 

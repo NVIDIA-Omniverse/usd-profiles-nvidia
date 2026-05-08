@@ -75,10 +75,11 @@ Generated files appear under `_build/profile-codegen/example_profiles`.
 
 ## Key Dependencies
 
-Package Purpose
-`usd-profiles-nvidia` Parses specs and generates Python enums
-`uv` Runs the package without a checked-in virtual environment
-`usd-profiles-nvidia[sphinx]` Optional Sphinx documentation integration; not required for codegen
+| Package | Purpose |
+|---------|---------|
+| `usd-profiles-nvidia` | Parses specs and generates Python enums |
+| `uv` | Runs the package without a checked-in virtual environment |
+| `usd-profiles-nvidia[sphinx]` | Optional Sphinx documentation integration; not required for codegen |
 
 ## Common Pitfalls
 

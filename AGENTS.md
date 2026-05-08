@@ -32,24 +32,16 @@ Primary use case: author structured profile specs, then generate importable Pyth
 
 ## Common Workflows
 
-### Code Generation
+### Code Generation (uv)
 
-From the repository root, the minimal example is:
+  * Generate the minimal example:
+    * `uv run --no-project --with usd-profiles-nvidia==1.14.1 python -m usd_profiles_nvidia.codegen --docs-root examples/python/profile-codegen/specs --destination-dir _build/profile-codegen --package-name example_profiles`
+  * Generated files appear under `_build/profile-codegen/example_profiles`.
 
-  * `uv run --no-project --with usd-profiles-nvidia==1.14.1 python -m usd_profiles_nvidia.codegen --docs-root examples/python/profile-codegen/specs --destination-dir _build/profile-codegen --package-name example_profiles`
+### Tests
 
-Generated files should appear under `_build/profile-codegen/example_profiles`.
-
-### Tests and Lint
-
-  * Run targeted tests first when changing parser or codegen behavior.
-  * Keep verification focused on the parser, codegen, or documentation path touched by the change.
-
-### Documentation and Examples
-
-  * Keep runnable examples under `examples/` and have skills point to those files.
-  * Prefer updating example files over embedding long Markdown or TOML examples inline in skills.
-  * Mention `usd-profiles-nvidia[sphinx]` only for optional Sphinx documentation integration, not as a codegen requirement.
+  * Tests live under `tests/`.
+  * If working on parser or codegen behavior, run targeted tests first, then broader suites as needed.
 
 ## Use Skills for Task-Specific Work
 
@@ -63,7 +55,9 @@ If you add a repeated workflow, add a matching skill under `skills/` and referen
 
   * Prefer small, targeted edits over broad refactors unless requested.
   * Keep examples, skills, and CLI option names in sync with code behavior.
+  * Keep runnable examples under `examples/` and have skills point to those files.
   * Use `--package-name` for codegen examples; the older namespace option is deprecated.
+  * Mention `usd-profiles-nvidia[sphinx]` only for optional Sphinx documentation integration, not as a codegen requirement.
   * Preserve licensing headers and proprietary notices where present.
   * Do not commit generated `_build/`, local virtual environments, or package caches.
   * Keep profile codegen guidance focused on usd-profiles-nvidia. Runtime validation integration belongs in downstream documentation.

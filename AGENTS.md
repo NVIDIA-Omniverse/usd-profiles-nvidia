@@ -29,7 +29,6 @@ Primary use case: author structured profile specs, then generate importable Pyth
   * `examples/python/profile-codegen/` - Minimal runnable codegen example
   * `skills/` - Task-oriented AI agent skills (`*/SKILLS.md`)
   * `docs/` - Documentation support files
-  * `tools/`, `repo.bat`, `repo.sh`, `repo.toml` - Repo tooling
 
 ## Common Workflows
 
@@ -44,8 +43,7 @@ Generated files should appear under `_build/profile-codegen/example_profiles`.
 ### Tests and Lint
 
   * Run targeted tests first when changing parser or codegen behavior.
-  * Use `.\repo.bat test` on Windows or `./repo.sh test` on Linux when the repo tool environment is available.
-  * Use `.\repo.bat lint` on Windows or `./repo.sh lint` on Linux for configured lint checks.
+  * Keep verification focused on the parser, codegen, or documentation path touched by the change.
 
 ### Documentation and Examples
 

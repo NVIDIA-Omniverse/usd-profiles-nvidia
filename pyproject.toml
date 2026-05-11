@@ -1,6 +1,6 @@
 [project]
 name = "usd-profiles-nvidia"
-version = "1.14.1"
+version = "1.15.0"
 description = "NVIDIA OpenUSD Profiles"
 authors = [
     {name = "NVIDIA"},

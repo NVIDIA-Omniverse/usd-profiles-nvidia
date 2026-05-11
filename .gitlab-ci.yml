@@ -112,6 +112,10 @@ build-pip:
     paths:
       - dist
 
+# ==============================================================================================================
+# Test Jobs
+# ==============================================================================================================
+
 test-pip:
   stage: test
   extends:
@@ -121,6 +125,35 @@ test-pip:
       artifacts: true
   script:
     - ./repo.sh uv -- run --no-project --with ./dist/usd_profiles_nvidia-*.whl --with "sphinx>=7.2.6" --with "myst-parser>=4.0.0" python -m unittest discover -s tests
+
+test-coverage:
+  stage: test
+  extends:
+    - .ipp_lnx_x86_64_cpu_medium
+  needs: []
+  script:
+    - |
+      set -o pipefail
+      ./repo.sh uv -- run \
+        --with coverage \
+        --with "sphinx>=7.2.6" \
+        --with "myst-parser>=4.0.0" \
+        --with-editable . \
+        coverage run \
+          --source=src \
+          --omit="src/usd_profiles_nvidia/capabilities/*" \
+          -m unittest discover -s tests
+      ./repo.sh uv -- run --with coverage coverage report
+      ./repo.sh uv -- run --with coverage coverage xml -o coverage.xml
+  coverage: '/^TOTAL.*\s+(\d+(?:\.\d+)?%)$/'
+  artifacts:
+    when: always
+    paths:
+      - coverage.xml
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 # ==============================================================================================================
 # Publish Jobs
@@ -136,6 +169,8 @@ publish-pip-artifactory:
     - job: build-pip
       artifacts: true
     - job: test-pip
+      artifacts: false
+    - job: test-coverage
       artifacts: false
   before_script:
     - !reference [.osec:vault:v3:linux, artifactory:perform_vault_requests]
@@ -176,6 +211,8 @@ release_job:
     - job: check-version
       artifacts: true
     - job: test-pip
+      artifacts: false
+    - job: test-coverage
       artifacts: false
   script:
     - echo "Creating release"

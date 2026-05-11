@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.0] - 11/05/2026
+### Added
+- AI-agent guidance and a project setup skill for Python code generation workflows.
+- Minimal runnable Python code generation example covering requirements, capabilities, features, and profiles.
+
+### Changed
+- Documented core package requirements and optional Sphinx integration dependencies.
+
 ## [1.14.1] - 06/05/2026
 ### Fixed
 - Update project name.

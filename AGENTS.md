@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+
 # AGENTS.md - AI Agent Guide for usd-profiles-nvidia
 
 This file gives AI coding agents the minimum context needed to work effectively in this repository. Use it as a

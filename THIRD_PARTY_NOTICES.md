@@ -2,7 +2,7 @@
 
 ## Apache 2.0 License
 
-The USD Profiles NVIDIA Python package is provided under the [Apache License, Version 2.0](../LICENSE).
+The USD Profiles NVIDIA Python package is provided under the [Apache License, Version 2.0](LICENSE).
 
 ## Runtime License Notices
 
@@ -23,7 +23,7 @@ therefore link to the upstream projects directly.
 
 ### USD Profiles NVIDIA License
 
-- [Apache License, Version 2.0](../LICENSE)
+- [Apache License, Version 2.0](LICENSE)
 
 ### Jinja2 License
 

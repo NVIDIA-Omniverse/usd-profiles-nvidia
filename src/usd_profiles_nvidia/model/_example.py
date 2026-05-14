@@ -32,8 +32,8 @@ class ExampleSnippet:
 
     @property
     def filename(self) -> str:
-        md5 = hashlib.md5(self.content.encode("utf-8")).hexdigest()[:12]
-        return f"{md5}.{self.language.value}"
+        digest = hashlib.sha256(self.content.encode("utf-8")).hexdigest()[:12]
+        return f"{digest}.{self.language.value}"
 
 
 @dataclass(frozen=True, slots=True)

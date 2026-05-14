@@ -14,12 +14,6 @@ from ._parser import Section
 
 logger = logging.getLogger(__name__)
 
-# Pre-compile regex for enum type parsing for better performance
-# Anchored pattern to prevent matching suffix noise like "enum(X) garbage"
-# Allow trailing whitespace for robustness with padded table cells
-# Enum values must be quoted strings: enum("X", "Y", "Z")
-# Allow optional whitespace around parentheses for formatting flexibility: enum ("X")
-_ENUM_RE = re.compile(r"^enum\s*\(\s*(.*?)\s*\)\s*$", re.IGNORECASE)
 # Regex to extract individual quoted strings from enum values (must not be empty)
 _ENUM_VALUE_RE = re.compile(r'"([^"]+)"')
 # Regex to validate that content contains only quoted strings, commas, and whitespace
@@ -53,12 +47,10 @@ class ParameterParser:
         """
         type_str = type_str.strip()
 
-        # Check for enum type with pattern: enum("value1", "value2", ...) using pre-compiled regex
-        # Use fullmatch to ensure entire string matches (no trailing garbage)
-        enum_match = _ENUM_RE.fullmatch(type_str)
-        if enum_match:
+        enum_remainder = type_str[4:].lstrip() if type_str[:4].lower() == "enum" else ""
+        if enum_remainder.startswith("(") and enum_remainder.endswith(")"):
             # Extract quoted string values from the enum using regex
-            values_str = enum_match.group(1)
+            values_str = enum_remainder[1:-1].strip()
 
             # Validate that the content only contains properly quoted strings and commas
             # This catches unquoted values, empty strings, and other malformed inputs

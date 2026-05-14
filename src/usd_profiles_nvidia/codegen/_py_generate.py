@@ -21,11 +21,11 @@ def get_environment():
     Jinja2 is imported lazily because this module is loaded by the repo tool
     runner whose Python environment may not have jinja2 installed.
     """
-    from jinja2 import Environment, FileSystemLoader
+    from jinja2 import Environment, FileSystemLoader, select_autoescape
 
     resources_dir: str = os.path.join(os.path.dirname(__file__), "resources")
     loader: FileSystemLoader = FileSystemLoader(resources_dir)
-    return Environment(loader=loader)
+    return Environment(loader=loader, autoescape=select_autoescape(["html", "xml"]))
 
 
 @dataclass(kw_only=True)

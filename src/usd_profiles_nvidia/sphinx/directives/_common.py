@@ -5,7 +5,7 @@
 import os
 from functools import cache
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
 @cache
@@ -15,4 +15,4 @@ def get_directives_environment() -> Environment:
     Not stored on app.env so Sphinx can pickle the build environment.
     """
     loader: FileSystemLoader = FileSystemLoader(os.path.dirname(__file__))
-    return Environment(loader=loader)
+    return Environment(loader=loader, autoescape=select_autoescape(["html", "xml"]))

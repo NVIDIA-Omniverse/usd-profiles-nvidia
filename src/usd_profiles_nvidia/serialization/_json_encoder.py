@@ -30,6 +30,9 @@ class _InlineDirective:
     value: str
 
 
+_INLINE_DIRECTIVE_RE = re.compile(r"\{[^}`]+\}`([^`]*)`")
+
+
 class JsonSerialize(json.JSONEncoder):
     @singledispatchmethod
     def default(self, o):
@@ -125,7 +128,7 @@ class JsonSerialize(json.JSONEncoder):
 
     @default.register
     def _(self, o: _InlineDirective):
-        if value := re.search(r"{.*}`(.*?)`", o.value):
+        if value := _INLINE_DIRECTIVE_RE.search(o.value):
             return value.group(1)
         return o.value
 

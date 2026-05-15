@@ -16,6 +16,7 @@ Each subdirectory contains a single `SKILLS.md` file with YAML frontmatter:
 
     skills/
       project-setup-python/SKILLS.md
+      project-venv-setup/SKILLS.md
 
 ## SKILLS.md Format
 

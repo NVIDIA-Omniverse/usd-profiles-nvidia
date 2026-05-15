@@ -142,7 +142,7 @@ python -m pip install -e ".[sphinx]"
 | Package | Purpose |
 |---------|---------|
 | `build` | PEP 517 wheel build frontend for source builds inside the venv |
-| `jinja2` | Templates generated Python package files |
+| `jinja2` | Templates for generated Python package files |
 | `markdown-it-py` | Parses Markdown profile specs |
 | `tomli` | Reads TOML profile files on Python versions earlier than 3.11 |
 | `sphinx` | Optional Sphinx runtime used by directive tests |

@@ -34,6 +34,7 @@ artifacts.
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip build
+python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
 ```
 
 On Windows:
@@ -42,9 +43,11 @@ On Windows:
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip build
+python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
 ```
 
-This keeps the virtual environment clean until the built wheel is installed.
+This installs only build tooling and optional Sphinx test dependencies. Keep the package itself out of the virtual
+environment until the built wheel is installed.
 
 ## Build from Source
 
@@ -75,19 +78,6 @@ $wheel = (
   Select-Object -First 1
 ).FullName
 python -m pip install --force-reinstall $wheel
-```
-
-The full repository test suite includes Sphinx directive coverage. Install optional Sphinx dependencies before running
-the full suite:
-
-```bash
-python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
-```
-
-On Windows:
-
-```powershell
-python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
 ```
 
 ## Run
@@ -155,13 +145,15 @@ python -m pip install -e ".[sphinx]"
 | `jinja2` | Templates generated Python package files |
 | `markdown-it-py` | Parses Markdown profile specs |
 | `tomli` | Reads TOML profile files on Python versions earlier than 3.11 |
-| `usd-profiles-nvidia[sphinx]` | Optional Sphinx integration for documentation directives and roles |
+| `sphinx` | Optional Sphinx runtime used by directive tests |
+| `myst-parser` | Optional MyST Markdown parser used by Sphinx tests |
 
 ## Common Pitfalls
 
 - Use Python 3.10 or later; the examples above prefer Python 3.11.
 - Activate the virtual environment before installing build tools, the built wheel, or test dependencies.
-- Install the built wheel and optional Sphinx dependencies before running the full test suite in a clean venv.
+- Install optional Sphinx dependencies during venv setup before running the full test suite.
+- Install the built wheel before running package smoke tests in a clean venv.
 - Use `--package-name` for new codegen examples; `--namespace` remains available for compatibility but is deprecated.
 - Keep `profiles.toml.example` as documentation-only unless TOML profiles should replace Markdown profile parsing.
 - Reinstall the wheel after rebuilding, otherwise smoke tests may still exercise a previous local build.

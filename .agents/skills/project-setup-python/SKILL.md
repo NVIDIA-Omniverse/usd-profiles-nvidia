@@ -1,9 +1,8 @@
 ---
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-# SPDX-License-Identifier: Apache-2.0
-#
 name: project-setup-python
-version: "1.0.0"
+version: "1.15.0"
+license: Apache-2.0
 description: "Author usd-profiles-nvidia specs and generate Python enums from Markdown/TOML. Do NOT use for USD asset validation."
 metadata:
   author: NVIDIA

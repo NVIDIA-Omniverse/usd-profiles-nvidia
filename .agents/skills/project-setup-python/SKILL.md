@@ -3,12 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 name: project-setup-python
-description: Set up a Python project for usd-profiles-nvidia specs and enum codegen. Use for profile specs or examples.
+version: "1.0.0"
+description: "Author usd-profiles-nvidia specs and generate Python enums from Markdown/TOML. Do NOT use for USD asset validation."
+metadata:
+  author: NVIDIA
+  tags:
+    - usd-profiles-nvidia
+    - codegen
+    - profile-specs
 ---
 
 # Python Project Setup
 
-## Overview
+## Purpose
 
 usd-profiles-nvidia reads structured Markdown and TOML profile specs and generates a Python package with requirement,
 capability, feature, and profile enums. Use this skill for usd-profiles-nvidia code generation only; downstream

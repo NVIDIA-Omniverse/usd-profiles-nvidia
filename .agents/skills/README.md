@@ -1,8 +1,5 @@
----
-# SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-# SPDX-License-Identifier: Apache-2.0
-#
----
+<!-- SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
 
 # usd-profiles-nvidia Skills Directory
 
@@ -12,18 +9,27 @@ possible.
 
 ## Structure
 
-Each subdirectory contains a single `SKILLS.md` file with YAML frontmatter:
+Each subdirectory contains a single `SKILL.md` file with YAML frontmatter:
 
-    skills/
-      project-setup-python/SKILLS.md
-      project-venv-setup/SKILLS.md
+    .agents/skills/
+      project-setup-python/SKILL.md
+      project-venv-setup/SKILL.md
 
-## SKILLS.md Format
+## SKILL.md Format
 
     ---
     name: skill-name
-    description: What this skill covers. Use when user asks to [trigger phrases].
+    version: "1.0.0"
+    license: Apache-2.0
+    description: "What this skill covers. Use when user asks to [trigger phrases]."
+    metadata:
+      author: NVIDIA
+      tags:
+        - example
     ---
+
+    <!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+    <!-- SPDX-License-Identifier: Apache-2.0 -->
 
     # Skill Title
 
@@ -53,7 +59,7 @@ Each subdirectory contains a single `SKILLS.md` file with YAML frontmatter:
 Skills reference files in `examples/` instead of duplicating longer snippets inline. This keeps examples accurate as
 the API evolves.
 
-### Reference format in SKILLS.md
+### Reference format in SKILL.md
 
     > Source: `examples/python/minimal/specs/features/feature-example.md`
 
@@ -61,12 +67,12 @@ Agents should read the referenced file directly when they need the current examp
 
 ## Adding a New Skill
 
-1. Create a new directory under `skills/` named after the skill using kebab-case.
-2. Add a `SKILLS.md` file inside it following the format above.
+1. Create a new directory under `.agents/skills/` named after the skill using kebab-case.
+2. Add a `SKILL.md` file inside it following the format above.
 3. Prefer runnable examples under `examples/` and reference them from the skill.
 4. Keep each skill focused on one workflow.
 
 ## Updating Skills
 
 When you change codegen behavior, example specs, or command-line options that affect an existing skill, update the
-corresponding `SKILLS.md` to keep it accurate.
+corresponding `SKILL.md` to keep it accurate.

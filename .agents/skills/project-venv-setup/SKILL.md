@@ -1,10 +1,19 @@
 ---
-# SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-# SPDX-License-Identifier: Apache-2.0
-#
 name: project-venv-setup
-description: Creating a local Python venv for usd-profiles-nvidia, building the project wheel, installing the built wheel, running unit tests, or smoke testing usd_profiles_nvidia.codegen from that environment.
+version: "1.15.0"
+license: Apache-2.0
+description: "Set up a local Python venv for usd-profiles-nvidia: build/install the wheel, run tests, or smoke test usd_profiles_nvidia.codegen."
+metadata:
+  author: NVIDIA
+  tags:
+    - usd-profiles-nvidia
+    - venv
+    - build
+    - codegen
 ---
+
+<!-- SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
 
 # Project Virtual Environment Setup
 
@@ -41,7 +50,7 @@ On Windows:
 
 ```powershell
 py -3.11 -m venv .venv  # use -3.10 or -3.12 if 3.11 is not installed
-.\.venv\Scripts\Activate.ps1
+./.venv/Scripts/Activate.ps1
 python -m pip install --upgrade pip build
 python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
 ```
@@ -73,7 +82,7 @@ On Windows:
 
 ```powershell
 $wheel = (
-  Get-ChildItem .\dist\usd_profiles_nvidia-*.whl |
+  Get-ChildItem ./dist/usd_profiles_nvidia-*.whl |
   Sort-Object LastWriteTime -Descending |
   Select-Object -First 1
 ).FullName

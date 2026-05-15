@@ -31,7 +31,7 @@ artifacts.
 ## Setup with venv
 
 ```bash
-python3.11 -m venv .venv
+python3.11 -m venv .venv  # use python3.10 or python3.12 if 3.11 is not installed
 source .venv/bin/activate
 python -m pip install --upgrade pip build
 python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
@@ -40,7 +40,7 @@ python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
 On Windows:
 
 ```powershell
-py -3.11 -m venv .venv
+py -3.11 -m venv .venv  # use -3.10 or -3.12 if 3.11 is not installed
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip build
 python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"

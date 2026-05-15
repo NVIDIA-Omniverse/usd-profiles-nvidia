@@ -1,5 +1,4 @@
 ---
-# SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 name: project-setup-python
 version: "1.15.0"
 license: Apache-2.0
@@ -11,6 +10,9 @@ metadata:
     - codegen
     - profile-specs
 ---
+
+<!-- SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
 
 # Python Project Setup
 

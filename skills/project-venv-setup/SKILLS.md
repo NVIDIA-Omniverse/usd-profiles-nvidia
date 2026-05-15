@@ -77,6 +77,19 @@ $wheel = (
 python -m pip install --force-reinstall $wheel
 ```
 
+The full repository test suite includes Sphinx directive coverage. Install optional Sphinx dependencies before running
+the full suite:
+
+```bash
+python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
+```
+
+On Windows:
+
+```powershell
+python -m pip install "sphinx>=7.2.6" "myst-parser>=4.0.0"
+```
+
 ## Run
 
 After installing the built wheel, run the unit tests from the activated virtual environment:
@@ -148,7 +161,7 @@ python -m pip install -e ".[sphinx]"
 
 - Use Python 3.10 or later; the examples above prefer Python 3.11.
 - Activate the virtual environment before installing build tools, the built wheel, or test dependencies.
-- Install the built wheel before running package smoke tests in a clean venv.
+- Install the built wheel and optional Sphinx dependencies before running the full test suite in a clean venv.
 - Use `--package-name` for new codegen examples; `--namespace` remains available for compatibility but is deprecated.
 - Keep `profiles.toml.example` as documentation-only unless TOML profiles should replace Markdown profile parsing.
 - Reinstall the wheel after rebuilding, otherwise smoke tests may still exercise a previous local build.

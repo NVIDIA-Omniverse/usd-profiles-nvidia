@@ -2,7 +2,7 @@
 name: project-venv-setup
 version: "1.15.0"
 license: Apache-2.0
-description: "Set up a local Python venv for usd-profiles-nvidia: build/install the wheel, run tests, or smoke test usd_profiles_nvidia.codegen."
+description: "Set up a local Python venv for usd-profiles-nvidia: build/install the wheel, run tests, or smoke test usd_profiles_nvidia.codegen. Do NOT use for profile spec authoring."
 metadata:
   author: NVIDIA
   tags:
@@ -10,6 +10,7 @@ metadata:
     - venv
     - build
     - codegen
+compatibility: "Requires Python 3.10-3.12, pip and venv, network access to Python package indexes, and Linux/macOS shell or Windows PowerShell command syntax."
 ---
 
 <!-- SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
@@ -17,11 +18,16 @@ metadata:
 
 # Project Virtual Environment Setup
 
-## Overview
+## Purpose
 
 `usd-profiles-nvidia` can be built, installed, and tested from a plain Python virtual environment. Use this skill when a
 task needs clean virtual environment setup, wheel build/install verification, test execution from an installed package,
 or a quick `usd_profiles_nvidia.codegen` smoke test.
+
+## Prerequisites
+
+- Python 3.10-3.12.
+- `pip`, `venv`, and package-index access.
 
 ## Project Structure
 
@@ -157,6 +163,11 @@ python -m pip install -e ".[sphinx]"
 | `sphinx` | Optional Sphinx runtime used by directive tests |
 | `myst-parser` | Optional MyST Markdown parser used by Sphinx tests |
 
+## Limitations
+
+- Covers local venv and wheel verification only; use `project-setup-python` for profile spec authoring.
+- Does not publish packages or configure external CI.
+
 ## Common Pitfalls
 
 - Use Python 3.10 or later; the examples above prefer Python 3.11.
@@ -167,3 +178,9 @@ python -m pip install -e ".[sphinx]"
 - Keep `profiles.toml.example` as documentation-only unless TOML profiles should replace Markdown profile parsing.
 - Reinstall the wheel after rebuilding, otherwise smoke tests may still exercise a previous local build.
 - Leave generated `_build/`, `.venv/`, and `dist/` contents out of commits.
+
+## Troubleshooting
+
+- If `python -m build` is missing, install or upgrade the `build` package in the active virtual environment.
+- If build, test, or codegen validation errors still show old behavior after rebuilding, reinstall the newest wheel from
+  `dist/`.

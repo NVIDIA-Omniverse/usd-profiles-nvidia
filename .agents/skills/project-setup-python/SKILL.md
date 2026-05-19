@@ -9,6 +9,7 @@ metadata:
     - usd-profiles-nvidia
     - codegen
     - profile-specs
+compatibility: "Requires Python 3.10-3.12, uv or pip, network access to Python package indexes, and Linux/macOS shell or Windows PowerShell command syntax."
 ---
 
 <!-- SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
@@ -21,6 +22,11 @@ metadata:
 usd-profiles-nvidia reads structured Markdown and TOML profile specs and generates a Python package with requirement,
 capability, feature, and profile enums. Use this skill for usd-profiles-nvidia code generation only; downstream
 integration belongs in a separate project.
+
+## Prerequisites
+
+- Python 3.10-3.12.
+- `uv` or `pip` with package-index access.
 
 ## Project Structure
 
@@ -78,13 +84,15 @@ The example contains one requirement, one capability, one feature, and one profi
 
 From the repository root:
 
-    uv run \
-      --no-project \
-      --with . \
-      python -m usd_profiles_nvidia.codegen \
-        --docs-root examples/python/minimal/specs \
-        --destination-dir _build/minimal \
-        --package-name example_profiles
+```bash
+uv run \
+  --no-project \
+  --with . \
+  python -m usd_profiles_nvidia.codegen \
+    --docs-root examples/python/minimal/specs \
+    --destination-dir _build/minimal \
+    --package-name example_profiles
+```
 
 Note: replace `--with .` with `--with usd-profiles-nvidia` to use the public build.
 
@@ -98,6 +106,11 @@ Generated files appear under `_build/minimal/example_profiles`.
 | `uv` | Runs the package without a checked-in virtual environment |
 | `usd-profiles-nvidia[sphinx]` | Optional Sphinx documentation integration; not required for codegen |
 
+## Limitations
+
+* Covers profile spec authoring and enum code generation only; downstream USD asset validation belongs elsewhere.
+* Does not configure Sphinx documentation builds beyond noting optional dependencies.
+
 ## Common Pitfalls
 
 * Use `--package-name`; the older namespace option is deprecated.
@@ -106,3 +119,8 @@ Generated files appear under `_build/minimal/example_profiles`.
   parsing.
 * Match `features-table` entries to requirement codes and versions, such as `EX.001@1.0.0`.
 * Keep this workflow focused on profile code generation.
+
+## Troubleshooting
+
+* If codegen cannot find capabilities, features, or profiles, confirm their folders are under the `--docs-root` path.
+* If generated imports use the wrong package path, rerun codegen with the intended `--package-name` value.

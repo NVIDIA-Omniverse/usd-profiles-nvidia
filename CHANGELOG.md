@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.15.1] - 20/05/2026
+### Added
+- Project venv setup skill for local build, install, test, and codegen smoke workflows.
+- Security reporting guidance and repository-level third-party notices.
+
+### Changed
+- Improved skill metadata, validation guidance, and Python dependency setup documentation.
+
+### Fixed
+- Hardened generated snippet filenames and regex parsing for static analysis.
+- Fixed Jinja dependency guidance and Sphinx environment autoescape handling.
+
 ## [1.15.0] - 11/05/2026
 ### Added
 - AI-agent guidance and a project setup skill for Python code generation workflows.

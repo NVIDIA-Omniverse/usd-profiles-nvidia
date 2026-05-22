@@ -63,9 +63,9 @@ class CapabilityParser:
 
 
 @dataclass
-class CapabilitiesParser:
+class MdCapabilitiesParser:
     """
-    Parser for all capabilities in the root directory.
+    Markdown parser for all capabilities in the root directory.
 
     Args:
         root_dir: Sphinx srcdir.
@@ -87,3 +87,6 @@ class CapabilitiesParser:
             if capability := CapabilityParser(self.root_dir, source_path).parse():
                 capabilities.append(capability)
         return capabilities
+
+
+CapabilitiesParser = MdCapabilitiesParser

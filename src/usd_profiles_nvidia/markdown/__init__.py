@@ -2,13 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-from ._capabilities import CapabilitiesParser, CapabilityParser
-from ._features import FeatureParser, FeaturesParser
+from ._capabilities import CapabilitiesParser, CapabilityParser, MdCapabilitiesParser
+from ._features import FeatureParser, FeaturesParser, MdFeaturesParser
 from ._parameters import ParameterParser
 from ._parser import DocumentParser
-from ._profiles import ProfilesParser
-from ._requirements import RequirementsParser
-from ._specifications import SpecificationsParser
+from ._profiles import MdProfilesParser, ProfilesParser
+from ._requirements import MdRequirementsParser, RequirementsParser
 
 __all__ = [
     "CapabilitiesParser",
@@ -16,8 +15,11 @@ __all__ = [
     "DocumentParser",
     "FeatureParser",
     "FeaturesParser",
+    "MdCapabilitiesParser",
+    "MdFeaturesParser",
+    "MdProfilesParser",
+    "MdRequirementsParser",
     "ParameterParser",
     "ProfilesParser",
     "RequirementsParser",
-    "SpecificationsParser",
 ]

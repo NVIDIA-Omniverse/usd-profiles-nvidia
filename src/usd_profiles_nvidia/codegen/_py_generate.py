@@ -9,8 +9,8 @@ import shutil
 from dataclasses import dataclass
 from functools import cache
 
-from usd_profiles_nvidia.markdown import SpecificationsParser
 from usd_profiles_nvidia.model import Specifications
+from usd_profiles_nvidia.parsers import SpecificationsParser
 from usd_profiles_nvidia.store import SpecificationsStore
 
 

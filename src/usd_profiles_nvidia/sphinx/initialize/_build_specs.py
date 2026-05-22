@@ -4,8 +4,8 @@
 
 import logging
 
-from usd_profiles_nvidia.markdown import SpecificationsParser
 from usd_profiles_nvidia.model import Specifications
+from usd_profiles_nvidia.parsers import SpecificationsParser
 from usd_profiles_nvidia.store import RequirementStore
 
 logger = logging.getLogger(__name__)

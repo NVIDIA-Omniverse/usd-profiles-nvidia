@@ -177,9 +177,9 @@ class MultiFeatureParser(ReferencesParser):
 
 
 @dataclass
-class FeaturesParser:
+class MdFeaturesParser:
     """
-    Parser for features.
+    Markdown parser for features.
 
     Args:
         root_dir: Sphinx srcdir.
@@ -200,3 +200,6 @@ class FeaturesParser:
             elif multi_feature := MultiFeatureParser(self.root_dir, source_path).parse():
                 features.extend(multi_feature)
         return features
+
+
+FeaturesParser = MdFeaturesParser

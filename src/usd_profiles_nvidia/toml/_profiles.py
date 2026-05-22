@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+import logging
 import os
 from dataclasses import dataclass
 
@@ -9,9 +10,11 @@ from usd_profiles_nvidia.model import IdVersion, Metadata, Profile, Version
 
 PROFILES_TOML = "profiles.toml"
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass
-class TomlProfilesParser:
+class _TomlProfilesParser:
     """
     Parser for profiles defined in a TOML file.
 
@@ -94,3 +97,27 @@ class TomlProfilesParser:
                     )
                 )
         return profiles
+
+
+@dataclass
+class TomlProfilesParser:
+    """
+    Directory-level parser for TOML profiles.
+
+    Args:
+        root_dir: Sphinx srcdir.
+        path: The path to the profiles directory.
+    """
+
+    root_dir: str
+    path: str
+
+    def parse(self) -> list[Profile]:
+        """
+        Parse all TOML profiles from the root directory.
+        """
+        toml_path = os.path.join(self.path, PROFILES_TOML)
+        if not os.path.exists(toml_path):
+            return []
+        logger.info(f"Parsing profiles from TOML: {toml_path}")
+        return _TomlProfilesParser(toml_path).parse()

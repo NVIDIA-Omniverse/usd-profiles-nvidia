@@ -116,9 +116,9 @@ class RequirementParser:
 
 
 @dataclass
-class RequirementsParser:
+class MdRequirementsParser:
     """
-    Parser for requirements.
+    Markdown parser for requirements.
 
     Args:
         root_dir: Sphinx srcdir.
@@ -145,3 +145,6 @@ class RequirementsParser:
                 logger.warning(f"Failed to parse requirement from {source_path}: {e}")
                 continue
         return requirements
+
+
+RequirementsParser = MdRequirementsParser

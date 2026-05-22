@@ -24,3 +24,9 @@ class TestProfilesParser(unittest.TestCase):
         self.assertEqual(len(profiles[0].features), 2)
         self.assertEqual(profiles[0].features[0], IdVersion("simple", Version(1, 0, 0)))
         self.assertEqual(profiles[0].features[1], IdVersion("complex", Version(1, 0, 0)))
+
+    def test_does_not_parse_toml(self):
+        root_dir = Path(__file__).parent / "resources" / "toml-profiles"
+        parser = ProfilesParser(root_dir=str(root_dir), path=str(root_dir))
+
+        self.assertEqual(parser.parse(), [])

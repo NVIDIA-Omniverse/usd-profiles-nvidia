@@ -25,8 +25,9 @@ class TestOmniCompat(unittest.TestCase):
     def test_public_subpackage_shims_export_same_objects(self):
         module_exports = {
             "codegen": ["PythonGenerator"],
-            "markdown": ["DocumentParser", "SpecificationsParser"],
+            "markdown": ["DocumentParser", "ProfilesParser"],
             "model": ["Capability", "Requirement", "Version"],
+            "parsers": ["ProfilesParser", "SpecificationsParser"],
             "serialization": ["JsonDeserialize", "JsonSerialize"],
             "store": ["RequirementStore", "SpecificationsStore"],
             "toml": ["PROFILES_TOML", "TomlProfilesParser"],

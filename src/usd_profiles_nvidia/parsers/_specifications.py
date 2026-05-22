@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 @dataclass(kw_only=True)
 class SpecificationsParser:
     """
-    Parser for specifications.
+    Format-agnostic parser for specifications.
 
     Args:
         root_dir: Root directory containing capabilities/, profiles/, and features/ subdirectories.

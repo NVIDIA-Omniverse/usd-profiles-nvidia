@@ -7,7 +7,6 @@ import os
 from dataclasses import dataclass
 
 from usd_profiles_nvidia.model import IdVersion, Metadata, Naming, Profile
-from usd_profiles_nvidia.toml import PROFILES_TOML, TomlProfilesParser
 
 from ._features import FeatureParser
 from ._parser import FileParser, walk_md
@@ -59,12 +58,9 @@ class _ProfileTreeProcessor(FileParser):
 
 
 @dataclass
-class ProfilesParser:
+class MdProfilesParser:
     """
-    Parser for all profiles in the root directory.
-
-    Tries ``profiles.toml`` first (multi-version TOML format), then falls
-    back to individual ``profile-*.md`` files (markdown with linked features).
+    Markdown parser for all profiles in the root directory.
 
     Args:
         root_dir: Sphinx srcdir.
@@ -78,14 +74,10 @@ class ProfilesParser:
         logger.info(f"Parsing profile from: {source_path}")
         return _ProfileTreeProcessor(self.root_dir, source_path).run()
 
-    def _parse_toml(self) -> list[Profile]:
-        toml_path = os.path.join(self.path, PROFILES_TOML)
-        if not os.path.exists(toml_path):
-            return []
-        logger.info(f"Parsing profiles from TOML: {toml_path}")
-        return TomlProfilesParser(toml_path).parse()
-
-    def _parse_markdown(self) -> list[Profile]:
+    def parse(self) -> list[Profile]:
+        """
+        Parse all Markdown profiles from the root directory.
+        """
         profiles: list[Profile] = []
         for full_path in walk_md(self.path):
             source_file = os.path.basename(full_path)
@@ -97,11 +89,5 @@ class ProfilesParser:
                 profiles.append(profile)
         return profiles
 
-    def parse(self) -> list[Profile]:
-        # TOML is the authoritative source when present; if the file
-        # exists we use it exclusively (even if empty) and never fall
-        # through to markdown parsing.
-        toml_path = os.path.join(self.path, PROFILES_TOML)
-        if os.path.exists(toml_path):
-            return self._parse_toml()
-        return self._parse_markdown()
+
+ProfilesParser = MdProfilesParser

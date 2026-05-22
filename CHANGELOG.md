@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.15.3] - 22/05/2026
+### Changed
+- Release setup.
+
 ## [1.15.2] - 22/05/2026
 ### Changed
 - Added a parser facade that unifies Markdown and TOML profile parsing while preserving compatibility imports.

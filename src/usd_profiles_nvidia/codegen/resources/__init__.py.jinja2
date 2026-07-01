@@ -3,6 +3,7 @@
 #
 from ._examples import Examples, Example, ExampleSnippet, ExampleSnippetLanguage, ExampleResult
 from ._parameters import Parameter, Parameters, ParameterType
+from ._api import FeatureRef, RequirementRef
 from ._requirements import Requirements, Requirement
 from ._capabilities import (
     Capabilities, 
@@ -14,15 +15,20 @@ from ._capabilities import (
 from ._protocols import (
     RequirementProtocol, 
     CapabilityProtocol, 
+    FeatureRefProtocol,
     FeatureProtocol, 
-    ProfileProtocol
+    ProfileFeatureProtocol,
+    ProfileProtocol,
+    RequirementRefProtocol,
 )
-from ._profiles import Profiles, Profile
+from ._profiles import Profiles, Profile, ProfileFeature
 from ._features import Features, Feature
 
 __all__ = [
     "Requirements", 
     "Requirement",
+    "RequirementRef",
+    "FeatureRef",
     "Examples",
     "Example",
     "ExampleSnippet",
@@ -37,11 +43,15 @@ __all__ = [
     "{{ capability.class_name }}Requirements",
     {%- endfor %}
     "RequirementProtocol",
+    "RequirementRefProtocol",
     "CapabilityProtocol",
+    "FeatureRefProtocol",
     "FeatureProtocol",
+    "ProfileFeatureProtocol",
     "ProfileProtocol",
     "Profiles", 
     "Profile", 
+    "ProfileFeature",
     "Features", 
     "Feature",
 ]

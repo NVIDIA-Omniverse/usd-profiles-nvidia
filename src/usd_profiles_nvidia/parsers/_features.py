@@ -4,8 +4,9 @@
 
 from dataclasses import dataclass
 
+from usd_profiles_nvidia.api import Feature
+from usd_profiles_nvidia.json import JsonFeaturesParser
 from usd_profiles_nvidia.markdown import MdFeaturesParser
-from usd_profiles_nvidia.model import Feature
 
 
 @dataclass
@@ -25,4 +26,6 @@ class FeaturesParser:
         """
         Parse all features from the root directory.
         """
-        return MdFeaturesParser(root_dir=self.root_dir, path=self.path).parse()
+        features = MdFeaturesParser(root_dir=self.root_dir, path=self.path).parse()
+        features.extend(JsonFeaturesParser(root_dir=self.root_dir, path=self.path).parse())
+        return features

@@ -4,8 +4,8 @@
 
 from dataclasses import dataclass
 
+from usd_profiles_nvidia.api import Capability
 from usd_profiles_nvidia.markdown import MdCapabilitiesParser
-from usd_profiles_nvidia.model import Capability
 
 
 @dataclass

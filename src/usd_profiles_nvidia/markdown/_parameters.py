@@ -4,15 +4,12 @@
 
 """Parameter parsing for requirements."""
 
-import logging
 import re
 from dataclasses import dataclass
 
 from usd_profiles_nvidia.model import Parameter, ParameterType
 
 from ._parser import Section
-
-logger = logging.getLogger(__name__)
 
 # Regex to extract individual quoted strings from enum values (must not be empty)
 _ENUM_VALUE_RE = re.compile(r'"([^"]+)"')

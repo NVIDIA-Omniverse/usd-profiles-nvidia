@@ -4,18 +4,21 @@
 
 import unittest
 
-from usd_profiles_nvidia.model import Feature, Metadata, Version
+from usd_profiles_nvidia.api import Feature
 
 
 class TestFeature(unittest.TestCase):
 
-    def test_enum_name(self):
-        feature = Feature(id="semantic_labels", version=Version(1, 0, 0))
+    def test_feature_fields(self):
+        feature = Feature(
+            id="semantic_labels",
+            version="1.0.0",
+            path="docs/features/semantic_labels",
+            requirements=[],
+        )
 
-        self.assertEqual(feature.enum_id, "SEMANTIC_LABELS")
-        self.assertEqual(feature.enum_id_version, "SEMANTIC_LABELS_V1_0_0")
-
-    def test_source_file_name(self):
-        feature = Feature(id="semantic_labels", metadata=Metadata(path="docs/features/semantic_labels.md"))
-
-        self.assertEqual(feature.source_file_name, "semantic_labels")
+        self.assertEqual(feature.id, "semantic_labels")
+        self.assertEqual(feature.version, "1.0.0")
+        self.assertEqual(feature.path, "docs/features/semantic_labels")
+        self.assertEqual(feature.requirements, [])
+        self.assertEqual(feature.dependencies, [])

@@ -4,8 +4,8 @@
 
 from pkgutil import extend_path
 
-from usd_profiles_nvidia import __version__
+from usd_profiles_nvidia import CapabilityGraph, __version__
 
 __path__ = extend_path(__path__, __name__)
 
-__all__ = ["__version__"]
+__all__ = ["CapabilityGraph", "__version__"]

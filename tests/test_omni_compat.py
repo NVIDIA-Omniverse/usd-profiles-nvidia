@@ -16,19 +16,27 @@ class TestOmniCompat(unittest.TestCase):
         import omni.usd_profiles
 
         self.assertEqual(omni.usd_profiles.__version__, usd_profiles_nvidia.__version__)
-        self.assertEqual(omni.usd_profiles.__all__, ["__version__"])
+        self.assertIs(omni.usd_profiles.CapabilityGraph, usd_profiles_nvidia.CapabilityGraph)
+        self.assertEqual(omni.usd_profiles.__all__, ["CapabilityGraph", "__version__"])
 
         namespace: dict[str, str] = {}
         exec("from omni.usd_profiles import *", namespace)
         self.assertEqual(namespace["__version__"], usd_profiles_nvidia.__version__)
+        self.assertIs(namespace["CapabilityGraph"], usd_profiles_nvidia.CapabilityGraph)
 
     def test_public_subpackage_shims_export_same_objects(self):
         module_exports = {
             "codegen": ["PythonGenerator"],
+            "graph": ["CapabilityGraph", "CapabilityGraphBuilder", "CapabilityGraphDeserializer", "encode_graph"],
+            "json": ["JsonDeserialize", "JsonSerialize"],
             "markdown": ["DocumentParser", "ProfilesParser"],
-            "model": ["Capability", "Requirement", "Version"],
+            "model": [
+                "BuildCapabilityGraph",
+                "Capability",
+                "CapabilityNode",
+                "Version",
+            ],
             "parsers": ["ProfilesParser", "SpecificationsParser"],
-            "serialization": ["JsonDeserialize", "JsonSerialize"],
             "store": ["RequirementStore", "SpecificationsStore"],
             "toml": ["PROFILES_TOML", "TomlProfilesParser"],
         }
@@ -41,6 +49,14 @@ class TestOmniCompat(unittest.TestCase):
                 self.assertIs(old_module.__all__, new_module.__all__)
                 for export_name in export_names:
                     self.assertIs(getattr(old_module, export_name), getattr(new_module, export_name))
+
+    def test_omni_serialization_shim_uses_json_package(self):
+        old_module = importlib.import_module("omni.usd_profiles.serialization")
+        new_module = importlib.import_module("usd_profiles_nvidia.json")
+
+        self.assertIs(old_module.__all__, new_module.__all__)
+        self.assertIs(old_module.JsonDeserialize, new_module.JsonDeserialize)
+        self.assertIs(old_module.JsonSerialize, new_module.JsonSerialize)
 
     def test_codegen_main_shim_uses_new_entry_point(self):
         old_main = importlib.import_module("omni.usd_profiles.codegen.__main__")
@@ -74,7 +90,3 @@ class TestOmniCompat(unittest.TestCase):
         repo_root = os.path.dirname(os.path.dirname(__file__))
 
         self.assertFalse(os.path.exists(os.path.join(repo_root, "src", "omni", "__init__.py")))
-
-
-if __name__ == "__main__":
-    unittest.main()

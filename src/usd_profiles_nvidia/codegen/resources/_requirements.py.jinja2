@@ -2,49 +2,33 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-from dataclasses import dataclass
 from enum import Enum
 
-from ._parameters import Parameter, Parameters
-from ._examples import Example, Examples
+from ._api import Requirement
+from ._parameters import Parameters
+from ._examples import Examples
 
-
-@dataclass(frozen=True)
-class Requirement:
-    """
-    Args:
-        code: A unique identifier of the requirement
-        display_name: A human-readable name of the requirement
-        message: A basic description of the requirement
-        path: Relative path in documentation
-        compatibility: Compatibility of the requirement
-        tags: Tags of the requirement
-        parameters: Parameters of the requirement
-    """
-    code: str
-    version: str | None = None
-    display_name: str | None = None
-    message: str | None = None
-    path: str | None = None
-    compatibility: str | None = None
-    tags: tuple[str, ...] = ()
-    parameters: tuple[Parameter, ...] = ()
-    examples: tuple[Example, ...] = ()
 
 class Requirements(Requirement, Enum):
     """
     An enumeration of all requirements.
     """
+    # Validators are Sphinx-only metadata today; generated enums intentionally keep validator as None.
     {%- for requirement in requirements %}
     {{ requirement.enum_id_version }} = (
-        "{{ requirement.namespaced_id }}",
-        {{ requirement.version | string | tojson if requirement.version else 'None' }},
-        "{{requirement.name or requirement.code}}",
-        {{requirement.description | tojson}}, 
-        {{ requirement.metadata.html_path | tojson if requirement.metadata and requirement.metadata.html_path else 'None' }},
-        {{ requirement.compatibility.display_name | tojson if requirement.compatibility else 'None' }},
+        {{ requirement.namespaced_id | tojson }},
+        {{ requirement.version | tojson if requirement.version else 'None' }},
+        {{ requirement.display_name | tojson }},
+        {{ requirement.message | tojson }},
+        {{ requirement.html_path | tojson if requirement.html_path else 'None' }},
+        {{ requirement.compatibility | tojson if requirement.compatibility else 'None' }},
+        None,
         {%- if requirement.tags %}
-        ("{{requirement.tags.display_name}}",),
+        (
+            {%- for tag in requirement.tags %}
+            {{ tag | tojson }},
+            {%- endfor %}
+        ),
         {%- else %}
         (),
         {%- endif %}

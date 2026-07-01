@@ -5,24 +5,27 @@
 import json
 import unittest
 
+from usd_profiles_nvidia.api import Capability, Feature, FeatureRef, Requirement, RequirementRef
+from usd_profiles_nvidia.graph import CapabilityGraph
+from usd_profiles_nvidia.json import (
+    JsonDeserialize,
+    JsonSerialize,
+)
 from usd_profiles_nvidia.model import (
-    Capability,
+    BuildCapabilityGraph,
+    CapabilityNode,
     Example,
     ExampleResult,
     ExampleSnippet,
     ExampleSnippetLanguage,
-    Feature,
     IdVersion,
     Metadata,
     Parameter,
     ParameterType,
     Profile,
-    Requirement,
+    ProfileFeature,
+    Tag,
     Version,
-)
-from usd_profiles_nvidia.serialization import (
-    JsonDeserialize,
-    JsonSerialize,
 )
 
 
@@ -36,15 +39,14 @@ class TestJsonSerialization(unittest.TestCase):
 
     def test_serialize_requirement(self):
         """Test serialization of Requirement objects."""
-        metadata = Metadata("capabilities/test-requirement.md")
         requirement = Requirement(
             code="TEST_REQ_001",
-            version=Version(1, 0, 0),
-            name="Test Requirement",
-            description="A test requirement for unit testing",
+            version="1.0.0",
+            display_name="Test Requirement",
+            message="A test requirement for unit testing",
+            path="capabilities/test-requirement",
             compatibility="high",
-            tags="test,unit",
-            metadata=metadata,
+            tags=(Tag.PERFORMANCE.display_name, Tag.CORRECTNESS.display_name),
         )
 
         result = json.loads(json.dumps(requirement, cls=JsonSerialize))
@@ -54,7 +56,7 @@ class TestJsonSerialization(unittest.TestCase):
             "version": "1.0.0",
             "name": "Test Requirement",
             "compatibility": "high",
-            "tags": "test,unit",
+            "tags": [Tag.PERFORMANCE.display_name, Tag.CORRECTNESS.display_name],
             "validator": None,
             "parameters": [],
             "metadata": {
@@ -69,7 +71,7 @@ class TestJsonSerialization(unittest.TestCase):
 
     def test_serialize_requirement_with_none_values(self):
         """Test serialization of Requirement with None values."""
-        requirement = Requirement(code="TEST_REQ_002", name="Test Requirement 2")
+        requirement = Requirement(code="TEST_REQ_002", display_name="Test Requirement 2")
 
         result = json.loads(json.dumps(requirement, cls=JsonSerialize))
 
@@ -81,7 +83,7 @@ class TestJsonSerialization(unittest.TestCase):
             "tags": None,
             "validator": None,
             "parameters": [],
-            "metadata": {"path": ".html", "internal_path": ".md"},
+            "metadata": None,
             "message": None,
             "examples": [],
         }
@@ -91,15 +93,13 @@ class TestJsonSerialization(unittest.TestCase):
     def test_serialize_capability(self):
         """Test serialization of Capability objects."""
         metadata = Metadata("capabilities/test-capability.md")
-        requirement = Requirement(code="REQ_001", name="Test Req")
+        requirement = Requirement(code="REQ_001", display_name="Test Req")
 
         capability = Capability(
             id="test_capability",
-            version=Version(1, 0, 0),
-            name="Test Capability",
-            description="A test capability",
+            version="1.0.0",
+            path=metadata.path,
             requirements=[requirement],
-            metadata=metadata,
         )
 
         result = json.loads(json.dumps(capability, cls=JsonSerialize))
@@ -108,8 +108,8 @@ class TestJsonSerialization(unittest.TestCase):
         cap_data = result["capability"]
         self.assertEqual(cap_data["id"], "test_capability")
         self.assertEqual(cap_data["version"], "1.0.0")
-        self.assertEqual(cap_data["name"], "Test Capability")
-        self.assertEqual(cap_data["description"], "A test capability")
+        self.assertNotIn("name", cap_data)
+        self.assertNotIn("description", cap_data)
         self.assertEqual(len(cap_data["requirements"]), 1)
         self.assertIn("metadata", cap_data)
 
@@ -119,11 +119,11 @@ class TestJsonSerialization(unittest.TestCase):
 
         profile = Profile(
             id="test_profile",
-            version=Version(1, 0, 0),
-            name="Test Profile",
-            description="A test profile",
+            version="1.0.0",
+            display_name="Test Profile",
+            message="A test profile",
             metadata=metadata,
-            features=[IdVersion("test_feature", Version(1, 0, 0))],
+            features=[ProfileFeature(IdVersion("test_feature", Version(1, 0, 0)))],
         )
 
         result = json.loads(json.dumps(profile, cls=JsonSerialize))
@@ -134,7 +134,22 @@ class TestJsonSerialization(unittest.TestCase):
         self.assertEqual(prof_data["version"], "1.0.0")
         self.assertEqual(prof_data["name"], "Test Profile")
         self.assertEqual(prof_data["description"], "A test profile")
-        self.assertEqual(len(prof_data["features"]), 1)
+        self.assertEqual(prof_data["features"], [{"feature": "test_feature@1.0.0", "optional": False}])
+
+    def test_serialize_profile_optional_feature(self):
+        """Test serialization of optional profile feature references."""
+        profile = Profile(
+            id="test_profile",
+            version="1.0.0",
+            features=[ProfileFeature(IdVersion("test_feature", Version(1, 0, 0)), optional=True)],
+        )
+
+        result = json.loads(json.dumps(profile, cls=JsonSerialize))
+
+        self.assertEqual(
+            result["profile"]["features"],
+            [{"feature": "test_feature@1.0.0", "optional": True}],
+        )
 
     def test_serialize_feature(self):
         """Test serialization of Feature objects."""
@@ -142,11 +157,10 @@ class TestJsonSerialization(unittest.TestCase):
 
         feature = Feature(
             id="test_feature",
-            version=Version(1, 0, 0),
-            name="Test Feature",
-            description="A test feature",
-            requirements=[IdVersion("FEAT_REQ_001")],
-            metadata=metadata,
+            version="1.0.0",
+            path=metadata.path,
+            requirements=[RequirementRef("FEAT_REQ_001")],
+            dependencies=[FeatureRef("base_feature", "1.0.0")],
         )
 
         result = json.loads(json.dumps(feature, cls=JsonSerialize))
@@ -155,9 +169,14 @@ class TestJsonSerialization(unittest.TestCase):
         feat_data = result["feature"]
         self.assertEqual(feat_data["id"], "test_feature")
         self.assertEqual(feat_data["version"], "1.0.0")
-        self.assertEqual(feat_data["name"], "Test Feature")
-        self.assertEqual(feat_data["description"], "A test feature")
-        self.assertEqual(len(feat_data["requirements"]), 1)
+        self.assertNotIn("name", feat_data)
+        self.assertNotIn("description", feat_data)
+        self.assertEqual(
+            feat_data["metadata"],
+            {"path": "features/test-feature.html", "internal_path": "features/test-feature.md"},
+        )
+        self.assertEqual(feat_data["requirements"], ["FEAT_REQ_001"])
+        self.assertEqual(feat_data["dependencies"], ["base_feature@1.0.0"])
 
     def test_serialize_metadata(self):
         """Test serialization of Metadata objects."""
@@ -187,7 +206,7 @@ class TestJsonSerialization(unittest.TestCase):
         """Test serialization of Example objects."""
         example = Example(
             snippet=ExampleSnippet(language=ExampleSnippetLanguage.PYTHON, content="print('Hello, World!')"),
-            name="A test example",
+            display_name="A test example",
             result=ExampleResult.SUCCESS,
         )
         result = json.loads(json.dumps(example, cls=JsonSerialize))
@@ -228,3 +247,76 @@ class TestJsonSerialization(unittest.TestCase):
         id_version_no_ver = IdVersion("REQ_002", None)
         result_no_ver = json.loads(json.dumps(id_version_no_ver, cls=JsonSerialize))
         self.assertEqual(result_no_ver, "REQ_002")
+
+    def test_serialize_build_capability_graph(self):
+        """Test serialization of build graph objects to capabilities.json shape."""
+        graph = BuildCapabilityGraph()
+        graph.add_node(CapabilityNode(id="root", kind="namespace", docstring="Root"))
+        graph.add_node(
+            CapabilityNode(
+                id="root.geom",
+                kind="capability",
+                predecessors=["root"],
+                requirements={
+                    "VG.001": Requirement(
+                        code="VG.001",
+                        display_name="mesh-topology",
+                        validator="oav:vg-001",
+                        tags=(Tag.CORRECTNESS.display_name,),
+                        parameters=(Parameter(display_name="max_faces", type=ParameterType.INT, assigned_value=128),),
+                        examples=(
+                            Example(
+                                snippet=ExampleSnippet(
+                                    language=ExampleSnippetLanguage.USD,
+                                    content='def Mesh "bad" {}',
+                                ),
+                                display_name="Bad mesh",
+                                result=ExampleResult.FAILURE,
+                            ),
+                        ),
+                    )
+                },
+            )
+        )
+
+        result = json.loads(json.dumps(graph, cls=JsonSerialize))
+
+        self.assertEqual(result["schema"], "usd-profiles/capability-dag")
+        self.assertEqual(result["capabilities"]["root"]["kind"], "namespace")
+        self.assertEqual(result["capabilities"]["root.geom"]["predecessors"], ["root"])
+        self.assertEqual(
+            result["capabilities"]["root.geom"]["requirements"]["VG.001"]["name"],
+            "mesh-topology",
+        )
+        self.assertEqual(
+            result["capabilities"]["root.geom"]["requirements"]["VG.001"]["validator"],
+            "oav:vg-001",
+        )
+        self.assertEqual(
+            result["capabilities"]["root.geom"]["requirements"]["VG.001"]["parameters"][0]["display_name"],
+            "max_faces",
+        )
+        self.assertEqual(
+            result["capabilities"]["root.geom"]["requirements"]["VG.001"]["examples"][0]["result"],
+            "failure",
+        )
+
+    def test_serialize_capability_graph(self):
+        """Test serialization of runtime graph objects to capabilities.json shape."""
+        graph = CapabilityGraph.load_from_dict(
+            {
+                "capabilities": {
+                    "root": {"kind": "namespace"},
+                    "root.geom": {
+                        "kind": "capability",
+                        "predecessors": ["root"],
+                    },
+                },
+            }
+        )
+
+        result = json.loads(json.dumps(graph, cls=JsonSerialize))
+
+        self.assertEqual(result["schema"], "usd-profiles/capability-dag")
+        self.assertEqual(result["capabilities"]["root"]["kind"], "namespace")
+        self.assertEqual(result["capabilities"]["root.geom"]["predecessors"], ["root"])

@@ -4,23 +4,10 @@
 
 import hashlib
 from dataclasses import dataclass
-from enum import Enum
+
+from usd_profiles_nvidia.api import ExampleResult, ExampleSnippetLanguage
 
 from ._naming import Naming
-
-
-class ExampleResult(str, Enum):
-    """Expected result of an example."""
-
-    SUCCESS = "success"
-    FAILURE = "failure"
-
-
-class ExampleSnippetLanguage(str, Enum):
-    """Language of an example snippet."""
-
-    PYTHON = "python"
-    USD = "usd"
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,10 +28,10 @@ class Example:
     """An example of a requirement."""
 
     snippet: ExampleSnippet
-    name: str
+    display_name: str
     result: ExampleResult
 
     @property
     def enum_name(self) -> str:
         suffix: str = "_OK" if self.result is ExampleResult.SUCCESS else "_NOK"
-        return Naming.enum_name(self.name) + suffix
+        return Naming.enum_name(self.display_name) + suffix

@@ -11,8 +11,8 @@ from collections.abc import Iterator
 from functools import singledispatchmethod
 from typing import Any, Generic, TypeVar
 
+from usd_profiles_nvidia.json import JsonDeserialize
 from usd_profiles_nvidia.model import HasMetadata, IdVersion
-from usd_profiles_nvidia.serialization import JsonDeserialize
 
 logger = logging.getLogger(__name__)
 

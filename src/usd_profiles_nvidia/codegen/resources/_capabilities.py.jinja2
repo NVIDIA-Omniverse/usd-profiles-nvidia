@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-from dataclasses import dataclass
 from enum import Enum
 
+from ._api import Capability
 from ._requirements import Requirement, Requirements
 from ._parameters import Parameters
 
@@ -17,16 +17,22 @@ class {{ capability.class_name }}Requirements(Requirement, Enum):
     .. deprecated:: 0.2.0
         Use :class:`Requirements` instead.
     """
+    # Validators are Sphinx-only metadata today; generated enums intentionally keep validator as None.
     {%- for requirement in capability.requirements %}
     {{ requirement.enum_id }} = (
-        "{{ requirement.namespaced_id }}",
-        "{{ requirement.version or '0.1.0' }}",
-        "{{requirement.name or requirement.code}}",
-        {{requirement.description | tojson}}, 
-        {{ requirement.metadata.html_path | tojson if requirement.metadata and requirement.metadata.html_path else 'None' }},
-        {{ requirement.compatibility.display_name | tojson if requirement.compatibility else 'None' }},
+        {{ requirement.namespaced_id | tojson }},
+        {{ (requirement.version or '0.1.0') | string | tojson }},
+        {{ requirement.display_name | tojson }},
+        {{ requirement.message | tojson }},
+        {{ requirement.html_path | tojson if requirement.html_path else 'None' }},
+        {{ requirement.compatibility | tojson if requirement.compatibility else 'None' }},
+        None,
         {%- if requirement.tags %}
-        ("{{requirement.tags.display_name}}",),
+        (
+            {%- for tag in requirement.tags %}
+            {{ tag | tojson }},
+            {%- endfor %}
+        ),
         {%- else %}
         (),
         {%- endif %}
@@ -43,31 +49,15 @@ class {{ capability.class_name }}Requirements(Requirement, Enum):
     {% endfor %}
 {% endfor %}
 
-
-@dataclass(frozen=True)
-class Capability:
-    """
-    Args:
-        id: The id of the capability
-        version: The version of the capability
-        path: The path to the capability
-        requirements: The requirements of the capability
-    """
-    id: str
-    version: str
-    path: str
-    requirements: list[Requirement]
-
-
 class Capabilities(Capability, Enum):
     """
     An enumeration of all capabilities.
     """
     {%- for capability in capabilities %}
     {{ capability.enum_id_version }} = (
-        "{{ capability.namespaced_id }}",
-        "{{ capability.version }}", 
-        {{ capability.metadata.html_path | tojson if capability.metadata and capability.metadata.html_path else 'None' }},
+        {{ capability.namespaced_id | tojson }},
+        {{ capability.version | tojson if capability.version else 'None' }},
+        {{ capability.html_path | tojson if capability.html_path else 'None' }},
         [
             {%- for requirement in capability.requirements %}
             Requirements.{{ requirement.enum_id_version }},

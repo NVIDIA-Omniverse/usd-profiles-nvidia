@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.16.0] - 01/07/2026
+### Added
+- Add standalone `profiles.lock` tooling to check and update feature source fingerprints.
+- Add generated `capabilities.json` capability graph output and runtime graph query APIs.
+- Add feature dependency parsing for Markdown and JSON features and expose dependencies in generated Python packages.
+- Add public `usd_profiles_nvidia.api` DTO and protocol definitions for generated Python packages.
+- Add generated `RequirementRef` support so local requirements resolve normally while external requirements remain referenceable for downstream validation.
+- Support optional profile feature references in TOML profiles and generated Python.
+
+### Changed
+- Make `usd_profiles_nvidia.api.Requirement` the consistent requirement definition across the repo.
+- Move feature parsing, JSON, store, graph, and codegen paths to `usd_profiles_nvidia.api.Feature`, using `path` directly and dropping model-only feature name/message fields.
+- Add empty collection defaults to public API capability, feature, and profile DTOs.
+- Store feature requirement references as `RequirementRef` instead of `IdVersion`.
+- Improve Python code generation namespace handling so parsed specifications are left unchanged.
+- Move JSON serialization imports to `usd_profiles_nvidia.json` and `omni.usd_profiles.json`; compatibility imports remain available.
+
+### Fixed
+- Include Sphinx `_static` CSS assets in the wheel.
+- Fix Sphinx deprecation warnings in validator link roles.
+- Fix generated Python rendering for capability and requirement versions.
+- Handle Markdown preamble blocks before the first heading without parser crashes.
+
 ## [1.15.3] - 22/05/2026
 ### Changed
 - Release setup.

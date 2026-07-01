@@ -5,7 +5,8 @@
 from collections.abc import Iterator
 from math import sqrt
 
-from usd_profiles_nvidia.model import Example, Requirement
+from usd_profiles_nvidia.api import Requirement
+from usd_profiles_nvidia.model import Example
 
 
 class ExampleStore:

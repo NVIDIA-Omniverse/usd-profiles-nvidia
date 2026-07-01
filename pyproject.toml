@@ -1,6 +1,6 @@
 [project]
 name = "usd-profiles-nvidia"
-version = "1.15.3"
+dynamic = ["version"]
 description = "NVIDIA OpenUSD Profiles"
 authors = [
     {name = "NVIDIA"},
@@ -22,13 +22,19 @@ sphinx = [
 ]
 
 [project.urls]
+Repository = "https://github.com/NVIDIA-Omniverse/usd-profiles-nvidia"
+Changelog = "https://github.com/NVIDIA-Omniverse/usd-profiles-nvidia/blob/main/CHANGELOG.md"
 Homepage = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
 Documentation = "https://docs.omniverse.nvidia.com/kit/docs/asset-requirements"
+
+[tool.hatch.version]
+path = "VERSION"
+pattern = "^(?P<version>.+)$"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/usd_profiles_nvidia", "src/omni"]
 artifacts = [
-    "src/usd_profiles_nvidia/capabilities/**/*",
+    "src/usd_profiles_nvidia/sphinx/static/_static/**/*",
 ]
 
 [build-system]

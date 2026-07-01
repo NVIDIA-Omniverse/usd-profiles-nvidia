@@ -3,4 +3,8 @@
 #
 from importlib.metadata import version
 
+from usd_profiles_nvidia.graph import CapabilityGraph
+
 __version__ = version("usd-profiles-nvidia")
+
+__all__ = ["CapabilityGraph", "__version__"]

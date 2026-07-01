@@ -6,13 +6,12 @@ import logging
 import os
 from dataclasses import dataclass
 
+from usd_profiles_nvidia.api import Requirement
 from usd_profiles_nvidia.model import (
     Compatibility,
     Example,
     Metadata,
-    Requirement,
     Tag,
-    Version,
 )
 
 from ._examples import ExamplesParser
@@ -62,9 +61,9 @@ class _RequirementParser(FileParser):
         """
         data: dict[str, str] = self.main_table.to_dict()
         if "tags" in data:
-            data["tags"] = Tag.from_role(data["tags"].strip())
+            data["tags"] = (Tag.from_role(data["tags"].strip()).display_name,)
         if "compatibility" in data:
-            data["compatibility"] = Compatibility.from_role(data["compatibility"].strip())
+            data["compatibility"] = Compatibility.from_role(data["compatibility"].strip()).display_name
         if "code" not in data:
             raise ValueError(f"Requirement {self.relpath} has no code.")
         return data
@@ -81,15 +80,15 @@ class _RequirementParser(FileParser):
 
         return Requirement(
             code=data["code"],
-            version=Version(data.get("version")) if data.get("version") else None,
-            name=self.default_name,
-            description=self.summary_content,
+            version=data.get("version"),
+            display_name=self.default_name,
+            message=self.summary_content,
             compatibility=data.get("compatibility"),
             validator=data.get("validator"),
             tags=data.get("tags"),
-            parameters=parameters,
-            examples=examples,
-            metadata=Metadata(path=self.relpath),
+            parameters=tuple(parameters),
+            examples=tuple(examples),
+            path=Metadata(path=self.relpath).path,
         )
 
 

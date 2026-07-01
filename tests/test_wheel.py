@@ -3,6 +3,7 @@
 #
 
 import importlib
+import importlib.resources
 import os
 import subprocess
 import sys
@@ -11,6 +12,11 @@ from tempfile import TemporaryDirectory
 
 
 class TestWheel(unittest.TestCase):
+
+    def test_sphinx_artifacts(self):
+        style_css = importlib.resources.files("usd_profiles_nvidia") / "sphinx" / "static" / "_static" / "_style.css"
+
+        self.assertTrue(style_css.is_file(), f"Expected packaged Sphinx CSS at {style_css}")
 
     @unittest.skipUnless(__name__ == "__main__", "Run directly with 'python tests/test_wheel.py' to enable")
     def test_codegen(self):
@@ -46,7 +52,3 @@ class TestWheel(unittest.TestCase):
                 self.assertEqual(test_codegen.Requirements.VG_RTX_002_V1_0_0.version, "1.0.0")
             finally:
                 sys.path.pop(0)
-
-
-if __name__ == "__main__":
-    unittest.main()

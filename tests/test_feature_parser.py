@@ -2,11 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
+from usd_profiles_nvidia.api import FeatureRef, RequirementRef
+from usd_profiles_nvidia.json import JsonFeaturesParser
 from usd_profiles_nvidia.markdown import FeaturesParser
-from usd_profiles_nvidia.model import IdVersion, Version
+from usd_profiles_nvidia.parsers import FeaturesParser as AllFeaturesParser
 
 
 class TestFeaturesParser(unittest.TestCase):
@@ -17,10 +21,9 @@ class TestFeaturesParser(unittest.TestCase):
 
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].id, "example")
-        self.assertEqual(features[0].version, Version(1, 0, 0))
-        self.assertEqual(features[0].name, "Example")
-        self.assertEqual(features[0].description, "This is an example feature")
-        self.assertEqual(features[0].requirements, [IdVersion("HI.001")])
+        self.assertEqual(features[0].version, "1.0.0")
+        self.assertEqual(features[0].path, "example")
+        self.assertEqual(features[0].requirements, [RequirementRef("HI.001")])
 
     def test_parse_with_options_ok(self):
         root_dir = Path(__file__).parent / "resources" / "simple-feature-options"
@@ -29,10 +32,9 @@ class TestFeaturesParser(unittest.TestCase):
 
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].id, "example")
-        self.assertEqual(features[0].version, Version(1, 0, 0))
-        self.assertEqual(features[0].name, "Example")
-        self.assertEqual(features[0].description, "This is an example feature")
-        self.assertEqual(features[0].requirements, [IdVersion("HI.001"), IdVersion("HI.002")])
+        self.assertEqual(features[0].version, "1.0.0")
+        self.assertEqual(features[0].path, "example")
+        self.assertEqual(features[0].requirements, [RequirementRef("HI.001"), RequirementRef("HI.002")])
 
     def test_parse_with_extends_ok(self):
         root_dir = Path(__file__).parent / "resources" / "simple-feature-extends"
@@ -40,16 +42,75 @@ class TestFeaturesParser(unittest.TestCase):
         features = parser.parse()
 
         self.assertEqual(len(features), 2)
-        base, extended = sorted(features, key=lambda f: f.version or Version(0, 0, 0))
+        base, extended = sorted(features, key=lambda f: f.version or "0.0.0")
         self.assertEqual(base.id, "base")
-        self.assertEqual(base.version, Version(1, 0, 0))
+        self.assertEqual(base.version, "1.0.0")
         self.assertEqual(
             base.requirements,
-            [IdVersion("A", Version(1, 0, 0)), IdVersion("B", Version(1, 0, 0))],
+            [RequirementRef("A", "1.0.0"), RequirementRef("B", "1.0.0")],
         )
         self.assertEqual(extended.id, "extended")
-        self.assertEqual(extended.version, Version(1, 1, 0))
-        self.assertEqual(extended.extends, IdVersion("base", Version(1, 0, 0)))
+        self.assertEqual(extended.version, "1.1.0")
+        self.assertFalse(hasattr(extended, "extends"))
+
+    def test_parse_with_dependencies_ok(self):
+        root_dir = Path(__file__).parent / "resources" / "simple-feature-dependencies"
+        parser = FeaturesParser(root_dir=str(root_dir), path=str(root_dir))
+        features = parser.parse()
+
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].id, "dependent")
+        self.assertEqual(
+            features[0].dependencies,
+            [
+                FeatureRef("base", "1.0.0"),
+                FeatureRef("external.feature", "2.0.0"),
+            ],
+        )
+
+    def test_parse_json_features_with_dependencies_ok(self):
+        root_dir = Path(__file__).parent / "resources" / "feature-dependency-spec"
+        parser = JsonFeaturesParser(root_dir=str(root_dir), path=str(root_dir / "features"))
+        features = parser.parse()
+
+        self.assertEqual(len(features), 3)
+        by_id = {feature.id: feature for feature in features}
+        self.assertEqual(
+            by_id["FET003_BASE_PHYSX"].dependencies,
+            [FeatureRef("FET003_BASE_NEUTRAL", "0.1.0")],
+        )
+        self.assertEqual(by_id["FET003_BASE_PHYSX"].path, "features/FET_003-rigid_body_physics")
+        self.assertEqual(
+            by_id["FET004_BASE_STRING_DEP"].dependencies,
+            [FeatureRef("FET003_BASE_NEUTRAL", "0.1.0")],
+        )
+        self.assertEqual(by_id["FET004_BASE_STRING_DEP"].path, "features/FET_004-string_dependency")
+
+    def test_parse_minimal_json_feature(self):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            root_dir = Path(tmpdirname)
+            features_dir = root_dir / "features"
+            features_dir.mkdir()
+            (features_dir / "minimal.json").write_text(
+                json.dumps({"id": "minimal", "version": "1.0.0", "requirements": ["REQ.001"]}),
+                encoding="utf-8",
+            )
+
+            parser = JsonFeaturesParser(root_dir=str(root_dir), path=str(features_dir))
+            features = parser.parse()
+
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].id, "minimal")
+        self.assertEqual(features[0].version, "1.0.0")
+        self.assertEqual(features[0].requirements, [RequirementRef("REQ.001")])
+        self.assertEqual(features[0].path, "features/minimal")
+
+    def test_format_agnostic_parser_includes_json_features_ok(self):
+        root_dir = Path(__file__).parent / "resources" / "feature-dependency-spec"
+        parser = AllFeaturesParser(root_dir=str(root_dir), path=str(root_dir / "features"))
+        features = parser.parse()
+
+        self.assertEqual(len(features), 3)
 
     def test_parse_with_requirements_sublist_ok(self):
         root_dir = Path(__file__).parent / "resources" / "simple-feature-links"
@@ -58,11 +119,10 @@ class TestFeaturesParser(unittest.TestCase):
 
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].id, "example")
-        self.assertEqual(features[0].version, Version(1, 0, 0))
-        self.assertEqual(features[0].name, "Naming Paths Feature")
+        self.assertEqual(features[0].version, "1.0.0")
         self.assertEqual(
             features[0].requirements,
-            [IdVersion("NP.001", Version(0, 1, 0))],
+            [RequirementRef("NP.001", "0.1.0")],
         )
 
     def test_parse_with_multi_version_ok(self):
@@ -74,10 +134,8 @@ class TestFeaturesParser(unittest.TestCase):
         by_version = sorted(features, key=lambda f: f.version)
         v01, v10 = by_version[0], by_version[1]
         self.assertEqual(v01.id, "FET_001")
-        self.assertEqual(v01.version, Version(0, 1, 0))
-        self.assertEqual(v01.name, "Naming Paths Feature")
-        self.assertEqual(v01.requirements, [IdVersion("NP.001", Version(0, 1, 0))])
+        self.assertEqual(v01.version, "0.1.0")
+        self.assertEqual(v01.requirements, [RequirementRef("NP.001", "0.1.0")])
         self.assertEqual(v10.id, "FET_001")
-        self.assertEqual(v10.version, Version(1, 0, 0))
-        self.assertEqual(v10.name, "Naming Paths Feature")
-        self.assertEqual(v10.requirements, [IdVersion("NP.001", Version(0, 1, 0))])
+        self.assertEqual(v10.version, "1.0.0")
+        self.assertEqual(v10.requirements, [RequirementRef("NP.001", "0.1.0")])

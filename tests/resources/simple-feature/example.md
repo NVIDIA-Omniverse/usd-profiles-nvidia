@@ -12,4 +12,5 @@ This is an example feature
 ## Requirements
 
 ```{features-table}
+HI.001
 ```

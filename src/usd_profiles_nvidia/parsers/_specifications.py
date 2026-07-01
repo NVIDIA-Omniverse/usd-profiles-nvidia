@@ -7,7 +7,8 @@ import os
 from dataclasses import dataclass
 from typing import ClassVar
 
-from usd_profiles_nvidia.model import Capability, Feature, Profile, Specifications
+from usd_profiles_nvidia.api import Capability, Feature
+from usd_profiles_nvidia.model import Profile, Specifications
 
 from ._capabilities import CapabilitiesParser
 from ._features import FeaturesParser
@@ -27,7 +28,6 @@ class SpecificationsParser:
         capabilities_root: Directory containing capability files. If None and root_dir is None, capabilities will be empty.
         profiles_root: Directory containing profile files. If None and root_dir is None, profiles will be empty.
         features_root: Directory containing feature files. If None and root_dir is None, features will be empty.
-        reverse_domain: Reverse-domain prefix for spec identifiers (e.g. ``"com.nvidia.simready"``). Empty means legacy behavior.
     """
 
     CAPABILITIES_DIRECTORY: ClassVar[str] = "capabilities"
@@ -38,7 +38,6 @@ class SpecificationsParser:
     capabilities_root: str | None = None
     profiles_root: str | None = None
     features_root: str | None = None
-    reverse_domain: str = ""
 
     def __post_init__(self):
         if self.root_dir is not None:
@@ -50,25 +49,6 @@ class SpecificationsParser:
 
             if self.features_root is None:
                 self.features_root = os.path.join(self.root_dir, self.FEATURES_DIRECTORY)
-
-    def _inject_namespace(
-        self,
-        capabilities: list[Capability],
-        features: list[Feature],
-        profiles: list[Profile],
-    ) -> None:
-        """Set ``namespace`` on every model object for reverse-domain prefix stripping."""
-        if not self.reverse_domain:
-            return
-        ns: str = self.reverse_domain.rstrip(".")
-        for capability in capabilities:
-            capability.namespace = ns
-            for requirement in capability.requirements:
-                requirement.namespace = ns
-        for feature in features:
-            feature.namespace = ns
-        for profile in profiles:
-            profile.namespace = ns
 
     def parse(self) -> Specifications:
         """
@@ -88,12 +68,9 @@ class SpecificationsParser:
         if self.profiles_root and os.path.exists(self.profiles_root):
             profiles = ProfilesParser(root_dir=self.root_dir or self.profiles_root, path=self.profiles_root).parse()
 
-        self._inject_namespace(capabilities, features, profiles)
-
         logger.info(f"Parsed {len(capabilities)} capabilities, {len(features)} features, {len(profiles)} profiles")
         return Specifications(
             capabilities=capabilities,
             features=features,
             profiles=profiles,
-            reverse_domain=self.reverse_domain,
         )

@@ -71,7 +71,7 @@ class ExamplesParser:
             return None
         return Example(
             snippet=snippet,
-            name=name,
+            display_name=name,
             result=result,
         )
 

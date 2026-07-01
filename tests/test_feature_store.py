@@ -4,44 +4,39 @@
 
 import unittest
 
-from usd_profiles_nvidia.model import Feature, IdVersion, Version
+from usd_profiles_nvidia.api import Feature, RequirementRef
 from usd_profiles_nvidia.store import FeatureStore
 
 
 class TestFeatureStore(unittest.TestCase):
-    def test_merges_extended_and_self(self):
-        # Base feature @ 1.0.0: requirements A@1.0.0, B@1.0.0
-        base = Feature(
+    def test_resolve_requirements_deduplicates_by_code(self):
+        feature = Feature(
             id="feature-id",
-            version=Version(1, 0, 0),
+            version="1.0.0",
+            path="features/feature-id",
             requirements=[
-                IdVersion("A", Version(1, 0, 0)),
-                IdVersion("B", Version(1, 0, 0)),
+                RequirementRef("A", "1.0.0"),
+                RequirementRef("B", "1.0.0"),
+                RequirementRef("A", "1.1.0"),
             ],
         )
-        # Current feature @ 1.1.0 extends 1.0.0, requirements B@1.1.0 only
-        current = Feature(
-            id="feature-id",
-            version=Version(1, 1, 0),
-            extends=IdVersion("feature-id", Version(1, 0, 0)),
-            requirements=[IdVersion("B", Version(1, 1, 0))],
-        )
-        store = FeatureStore([base, current])
+        store = FeatureStore([feature])
 
-        resolved = sorted(store.resolve_requirements(current))
+        resolved = store.resolve_requirements(feature)
         self.assertEqual(
             resolved,
             [
-                IdVersion("A", Version(1, 0, 0)),
-                IdVersion("B", Version(1, 1, 0)),
+                RequirementRef("A", "1.1.0"),
+                RequirementRef("B", "1.0.0"),
             ],
         )
 
-    def test_no_extends_returns_self_requirements(self):
+    def test_resolve_requirements_returns_self_requirements(self):
         feature = Feature(
             id="feature-id",
-            version=Version(1, 0, 0),
-            requirements=[IdVersion("A", Version(1, 0, 0))],
+            version="1.0.0",
+            path="features/feature-id",
+            requirements=[RequirementRef("A", "1.0.0")],
         )
         store = FeatureStore([feature])
 

@@ -29,7 +29,7 @@ class Naming:
         return name.removeprefix(f"{namespace.rstrip('.')}.")
 
     @classmethod
-    def enum_name(cls, name: str, version: Version | None = None, namespace: str = "") -> str:
+    def enum_name(cls, name: str, version: str | Version | None = None, namespace: str = "") -> str:
         """
         Convert a name to an enum name. An enum name:
         - Has underscores instead of non-alphanumeric characters

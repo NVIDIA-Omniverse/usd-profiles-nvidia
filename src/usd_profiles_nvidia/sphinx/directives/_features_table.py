@@ -9,8 +9,9 @@ from docutils import nodes
 from docutils.statemachine import StringList
 from sphinx.util.docutils import SphinxDirective
 
+from usd_profiles_nvidia.api import Feature, Requirement
 from usd_profiles_nvidia.markdown import FeatureParser
-from usd_profiles_nvidia.model import Feature, Requirement
+from usd_profiles_nvidia.model import tag_priority
 from usd_profiles_nvidia.store import RequirementStore
 
 from ._common import get_directives_environment
@@ -71,7 +72,7 @@ class FeaturesTableDirective(SphinxDirective):
             The table content as a string
         """
         template = get_directives_environment().get_template("_requirements_table.md.j2")
-        return template.render(requirements=sorted(requirements, key=lambda x: (x.priority, x.code)))
+        return template.render(requirements=sorted(requirements, key=lambda x: (tag_priority(x.tags), x.code)))
 
 
 def setup(app) -> dict[str, bool]:

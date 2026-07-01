@@ -2,20 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import json
-import logging
-import os
+import re
 from dataclasses import dataclass, replace
 from typing import Any
 
-from usd_profiles_nvidia.model import Feature, IdVersion, Metadata, Requirement, Version
-from usd_profiles_nvidia.serialization import JsonDeserialize
+from usd_profiles_nvidia.api import Feature, FeatureRef, Requirement, RequirementRef
+from usd_profiles_nvidia.model import IdVersion, Metadata, Version
 
 from ._model import Section, Sections
 from ._parser import walk_md
 from ._references import ReferencesParser
-
-logger = logging.getLogger(__name__)
 
 
 class _FeatureParser(ReferencesParser):
@@ -24,7 +20,7 @@ class _FeatureParser(ReferencesParser):
     def default_name(self) -> str:
         return super().default_name.removeprefix("feature-")
 
-    def _parse_attributes(self, document) -> dict[str, Any]:
+    def _parse_attributes(self) -> dict[str, Any]:
         """
         Parse attributes from the document's first table.
 
@@ -36,56 +32,50 @@ class _FeatureParser(ReferencesParser):
             raise ValueError(f"Feature {self.relpath} has no version.")
         if "dependency" not in data:
             raise ValueError(f"Feature {self.relpath} has no dependency.")
-        data["version"] = Version(data["version"])
-        if "extends" in data:
-            data["extends"] = IdVersion.parse(data["extends"])
+        data["version"] = str(Version(data["version"]))
+        if "dependencies" in data:
+            data["dependencies"] = self._parse_dependencies(data["dependencies"])
         return data
 
-    @property
-    def requirements_json(self) -> str:
-        """
-        Returns the requirements JSON.
-        """
-        return os.path.join(os.path.dirname(self.source_file), f"requirements-{self.default_id}.json")
-
-    @property
-    def feature_json(self) -> list[IdVersion]:
-        """
-        Returns the requirements from the feature JSON.
-        """
-        if not os.path.exists(self.requirements_json):
-            return []
-        with open(self.requirements_json, encoding="utf-8") as f:
-            feature: Feature = json.load(f, cls=JsonDeserialize)
-            return feature.requirements
+    @staticmethod
+    def _parse_dependencies(value: str) -> list[FeatureRef]:
+        dependencies: list[FeatureRef] = []
+        for token in re.split(r"[,\n]", value):
+            token = token.strip()
+            if token:
+                dependency = IdVersion.parse(token)
+                dependencies.append(
+                    FeatureRef(dependency.id, str(dependency.version) if dependency.version is not None else None)
+                )
+        return dependencies
 
     def parse(self) -> Feature | None:
         """
         Parse the feature from the source file.
         Returns None if the feature has no requirements.
         """
-        requirements: list[IdVersion] = []
+        requirements: list[RequirementRef] = []
         if requirements_list := self.requirements_list:
-            requirements.extend(IdVersion(requirement.code, requirement.version) for requirement in requirements_list)
+            requirements.extend(
+                RequirementRef(requirement.code, requirement.version)
+                for requirement in requirements_list
+            )
         elif requirements_table := self.requirements_table:
-            requirements.extend(IdVersion(requirement.code, requirement.version) for requirement in requirements_table)
+            requirements.extend(
+                RequirementRef(requirement.code, requirement.version)
+                for requirement in requirements_table
+            )
         elif features_table := self.features_table:
             requirements.extend(features_table)
-        elif feature_json := self.feature_json:
-            requirements.extend(feature_json)
-        else:
+        if not requirements:
             return None
-        document = self.document
-        attrs: dict[str, Any] = self._parse_attributes(document)
+        attrs: dict[str, Any] = self._parse_attributes()
         return Feature(
             id=self.default_id,
             version=attrs["version"],
-            name=self.title,
-            description=self.description_content,
             requirements=requirements,
-            metadata=Metadata(path=self.relpath),
-            dependency=attrs["dependency"],
-            extends=attrs.get("extends"),
+            dependencies=attrs.get("dependencies", []),
+            path=Metadata(path=self.relpath).path,
         )
 
 
@@ -158,21 +148,22 @@ class MultiFeatureParser(ReferencesParser):
             return []
         feature: Feature = Feature(
             id=self.internal_id,
-            name=self.title,
-            description=self.description_content,
-            metadata=Metadata(path=self.relpath),
+            version="",
+            requirements=[],
+            path=Metadata(path=self.relpath).path,
         )
         features: list[Feature] = []
         for section in filter(self.is_version_section, versions_section.sections):
-            version: Version = Version(section.title.split(" ")[1])
+            version: str = str(Version(section.title.split(" ")[1]))
             requirements_section: Section | None = section.sections.get("requirements")
             if requirements_section is None:
                 continue
             requirements: list[Requirement] = self.get_requirements_list(requirements_section) or []
-            id_versions: list[IdVersion] = [
-                IdVersion(requirement.code, requirement.version) for requirement in requirements
+            requirement_refs: list[RequirementRef] = [
+                RequirementRef(requirement.code, requirement.version)
+                for requirement in requirements
             ]
-            features.append(replace(feature, version=version, requirements=id_versions))
+            features.append(replace(feature, version=version, requirements=requirement_refs))
         return features
 
 

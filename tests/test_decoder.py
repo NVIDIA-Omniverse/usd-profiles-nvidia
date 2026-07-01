@@ -5,25 +5,24 @@
 import json
 import unittest
 
+from usd_profiles_nvidia.api import Capability, Feature, FeatureRef, Requirement, RequirementRef
+from usd_profiles_nvidia.json import (
+    JsonDeserialize,
+)
 from usd_profiles_nvidia.model import (
-    Capability,
     Compatibility,
     Example,
     ExampleResult,
     ExampleSnippet,
     ExampleSnippetLanguage,
-    Feature,
     IdVersion,
     Metadata,
     Parameter,
     ParameterType,
     Profile,
-    Requirement,
+    ProfileFeature,
     Tag,
     Version,
-)
-from usd_profiles_nvidia.serialization import (
-    JsonDeserialize,
 )
 
 
@@ -51,11 +50,9 @@ class TestJsonDeserialization(unittest.TestCase):
 
         self.assertIsInstance(result, Capability)
         self.assertEqual(result.id, "test_capability")
-        self.assertEqual(result.version, Version(1, 0, 0))
-        self.assertEqual(result.name, "Test Capability")
-        self.assertEqual(result.description, "A test capability")
+        self.assertEqual(result.version, "1.0.0")
         self.assertEqual(result.requirements, [])
-        self.assertIsInstance(result.metadata, Metadata)
+        self.assertEqual(result.path, "test/capability")
 
     def test_deserialize_profile(self):
         """Test deserialization of Profile objects."""
@@ -74,10 +71,25 @@ class TestJsonDeserialization(unittest.TestCase):
 
         self.assertIsInstance(result, Profile)
         self.assertEqual(result.id, "test_profile")
-        self.assertEqual(result.version, Version(1, 0, 0))
-        self.assertEqual(result.name, "Test Profile")
-        self.assertEqual(result.description, "A test profile")
+        self.assertEqual(result.version, "1.0.0")
+        self.assertEqual(result.display_name, "Test Profile")
+        self.assertEqual(result.message, "A test profile")
         self.assertEqual(result.features, [])
+
+    def test_deserialize_profile_optional_feature(self):
+        """Test deserialization of optional profile feature references."""
+        json_data = {
+            "profile": {
+                "id": "test_profile",
+                "version": "1.0.0",
+                "features": [{"feature": "test_feature@1.0.0", "optional": True}],
+            }
+        }
+
+        result = json.loads(json.dumps(json_data), cls=JsonDeserialize)
+
+        self.assertEqual(result.features, [ProfileFeature(IdVersion("test_feature", Version(1, 0, 0)), optional=True)])
+        self.assertTrue(result.features[0].optional)
 
     def test_deserialize_feature(self):
         """Test deserialization of Feature objects."""
@@ -88,6 +100,7 @@ class TestJsonDeserialization(unittest.TestCase):
                 "name": "Test Feature",
                 "description": "A test feature",
                 "requirements": ["REQ_001@1.0.0", "REQ_002"],
+                "dependencies": ["base_feature@1.0.0"],
                 "metadata": {"path": "test/feature.html"},
             }
         }
@@ -96,10 +109,10 @@ class TestJsonDeserialization(unittest.TestCase):
 
         self.assertIsInstance(result, Feature)
         self.assertEqual(result.id, "test_feature")
-        self.assertEqual(result.version, Version(1, 0, 0))
-        self.assertEqual(result.name, "Test Feature")
-        self.assertEqual(result.description, "A test feature")
-        self.assertEqual(result.requirements, [IdVersion.parse("REQ_001@1.0.0"), IdVersion.parse("REQ_002")])
+        self.assertEqual(result.version, "1.0.0")
+        self.assertEqual(result.path, "test/feature")
+        self.assertEqual(result.requirements, [RequirementRef("REQ_001", "1.0.0"), RequirementRef("REQ_002")])
+        self.assertEqual(result.dependencies, [FeatureRef("base_feature", "1.0.0")])
 
     def test_deserialize_requirement(self):
         """Test deserialization of Requirement objects."""
@@ -117,12 +130,25 @@ class TestJsonDeserialization(unittest.TestCase):
 
         self.assertIsInstance(result, Requirement)
         self.assertEqual(result.code, "TEST_REQ_001")
-        self.assertEqual(result.version, Version(1, 0, 0))
-        self.assertEqual(result.name, "Test Requirement")
-        self.assertEqual(result.compatibility, Compatibility.OPENUSD)
-        self.assertEqual(result.tags, Tag.PERFORMANCE)
-        self.assertEqual(result.description, "A test requirement")
-        self.assertIsInstance(result.metadata, Metadata)
+        self.assertEqual(result.version, "1.0.0")
+        self.assertEqual(result.display_name, "Test Requirement")
+        self.assertEqual(result.compatibility, Compatibility.OPENUSD.display_name)
+        self.assertEqual(result.tags, (Tag.PERFORMANCE.display_name,))
+        self.assertEqual(result.message, "A test requirement")
+        self.assertEqual(result.path, "test/requirement")
+
+    def test_deserialize_requirement_rejects_null_tag(self):
+        """Test deserialization rejects malformed tag lists."""
+        json_data = {
+            "code": "TEST_REQ_001",
+            "version": "1.0.0",
+            "tags": ["performance", None],
+        }
+
+        result = json.loads(json.dumps(json_data), cls=JsonDeserialize)
+
+        self.assertIsInstance(result, Requirement)
+        self.assertEqual(result.tags, (Tag.PERFORMANCE.display_name,))
 
     def test_deserialize_metadata(self):
         """Test deserialization of Metadata objects."""
@@ -145,7 +171,7 @@ class TestJsonDeserialization(unittest.TestCase):
         self.assertIsInstance(result, Example)
         self.assertEqual(result.snippet.language, ExampleSnippetLanguage.PYTHON)
         self.assertEqual(result.snippet.content, "print('Hello, World!')")
-        self.assertEqual(result.name, "A test example")
+        self.assertEqual(result.display_name, "A test example")
         self.assertEqual(result.result, ExampleResult.SUCCESS)
 
     def test_deserialize_example_snippet(self):
@@ -174,3 +200,21 @@ class TestJsonDeserialization(unittest.TestCase):
         self.assertEqual(result.type, ParameterType.ENUM)
         self.assertEqual(result.assigned_value, "Y")
         self.assertEqual(result.enum_values, ["X", "Y", "Z"])
+
+    def test_deserialize_capability_graph_as_plain_dict(self):
+        """Test generic deserialization leaves graph JSON untouched."""
+        json_data = {
+            "schema": "usd-profiles/capability-dag",
+            "capabilities": {
+                "root": {"kind": "namespace"},
+                "root.profile": {
+                    "kind": "profile",
+                    "predecessors": ["root"],
+                },
+            },
+        }
+
+        result = json.loads(json.dumps(json_data), cls=JsonDeserialize)
+
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result, json_data)

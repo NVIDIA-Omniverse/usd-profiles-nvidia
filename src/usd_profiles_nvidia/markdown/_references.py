@@ -4,7 +4,8 @@
 import os
 from functools import cached_property
 
-from usd_profiles_nvidia.model import IdVersion, Requirement
+from usd_profiles_nvidia.api import Requirement, RequirementRef
+from usd_profiles_nvidia.model import IdVersion
 
 from ._model import BulletList, Section
 from ._parser import FileParser
@@ -58,7 +59,7 @@ class ReferencesParser(FileParser):
         return RequirementsParser(self.root_dir, [default_path]).parse()
 
     @property
-    def features_table(self) -> list[IdVersion] | None:
+    def features_table(self) -> list[RequirementRef] | None:
         """
         Returns the requirements declared in the `features-table` directive.
         """
@@ -71,9 +72,11 @@ class ReferencesParser(FileParser):
                 if not lines:
                     return []
 
-                versions: list[IdVersion] = []
+                versions: list[RequirementRef] = []
                 for line in lines:
-                    versions.append(IdVersion.parse(line))
+                    id_version = IdVersion.parse(line)
+                    version = str(id_version.version) if id_version.version is not None else None
+                    versions.append(RequirementRef(id_version.id, version))
                 return versions
         return None
 

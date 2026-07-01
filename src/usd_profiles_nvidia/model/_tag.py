@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from enum import Enum
 
 
@@ -50,3 +51,7 @@ class Tag(Enum):
         """Get a Tag from a role string like {tag}`performance`, returns UNKNOWN if not found."""
         match = re.search(r"\{tag\}`([^`]+)`", role)
         return cls.from_name(match.group(1)) if match else cls.UNKNOWN
+
+
+def tag_priority(tags: Sequence[str]) -> int:
+    return min((Tag.from_name(tag).priority for tag in tags), default=0)

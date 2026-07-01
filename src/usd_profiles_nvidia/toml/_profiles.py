@@ -6,7 +6,13 @@ import logging
 import os
 from dataclasses import dataclass
 
-from usd_profiles_nvidia.model import IdVersion, Metadata, Profile, Version
+from usd_profiles_nvidia.model import (
+    IdVersion,
+    Metadata,
+    Profile,
+    ProfileFeature,
+    Version,
+)
 
 PROFILES_TOML = "profiles.toml"
 
@@ -22,15 +28,15 @@ class _TomlProfilesParser:
 
         [Profile-Name]
         "1.0.0" = {features = [
-            {"FEATURE_ID" = {version = "0.1.0"}},
+            {"FEATURE_ID" = {version = "0.1.0"}, optional = true},
         ]}
         "2.0.0" = {features = [
             {"FEATURE_ID" = {version = "1.0.0"}},
         ]}
 
     Each TOML table is a profile name; keys within are version strings
-    mapping to a dict with a ``features`` list. Each feature entry is a
-    single-key dict mapping a feature ID to ``{version = "X.Y.Z"}``.
+    mapping to a dict with a ``features`` list. Each feature entry maps a
+    feature ID to ``{version = "X.Y.Z"}`` and may include ``optional = true``.
 
     Args:
         toml_path: Path to the profiles.toml file.
@@ -39,13 +45,15 @@ class _TomlProfilesParser:
     toml_path: str
 
     @staticmethod
-    def _parse_feature_entry(entry: dict) -> IdVersion:
-        """Parse a single feature entry like ``{"FET001" = {version = "0.1.0"}}``."""
-        if len(entry) != 1:
-            raise ValueError(f"Expected single-key feature dict, got: {entry}")
-        feature_id, attrs = next(iter(entry.items()))
+    def _parse_feature_entry(entry: dict) -> ProfileFeature:
+        """Parse a single feature entry like ``{"FET001" = {version = "0.1.0"}, optional = true}``."""
+        feature_entry = entry.copy()
+        optional = feature_entry.pop("optional", False)
+        if len(feature_entry) != 1:
+            raise ValueError(f"Expected exactly one feature key per entry, got: {list(entry.keys())}")
+        feature_id, attrs = next(iter(feature_entry.items()))
         version = Version(attrs["version"])
-        return IdVersion(feature_id, version)
+        return ProfileFeature(IdVersion(feature_id, version), optional=optional)
 
     def parse(self) -> list[Profile]:
         """Parse all profiles and versions from the TOML file."""
@@ -72,6 +80,7 @@ class _TomlProfilesParser:
                     f"Profile '{profile_name}' must be a TOML table, got {type(versions).__name__}: {versions!r}"
                 )
             for version_str, version_data in versions.items():
+                version = str(Version(version_str))
                 if not isinstance(version_data, dict):
                     raise ValueError(
                         f"Profile '{profile_name}' version '{version_str}' must be a table, "
@@ -81,7 +90,7 @@ class _TomlProfilesParser:
                     raise ValueError(
                         f"Profile '{profile_name}' version '{version_str}' missing required 'features' key"
                     )
-                features: list[IdVersion] = []
+                features: list[ProfileFeature] = []
                 for entry in version_data["features"]:
                     features.append(self._parse_feature_entry(entry))
                 # Use the raw TOML table name as the profile id (not normalized).
@@ -90,8 +99,8 @@ class _TomlProfilesParser:
                 profiles.append(
                     Profile(
                         id=profile_name,
-                        version=Version(version_str),
-                        name=profile_name,
+                        version=version,
+                        display_name=profile_name,
                         features=features,
                         metadata=Metadata(path=relpath),
                     )

@@ -4,18 +4,17 @@
 
 import unittest
 
-from usd_profiles_nvidia.model import Capability, Version
+from usd_profiles_nvidia.api import Capability
 
 
 class TestCapability(unittest.TestCase):
 
-    def test_enum_name(self):
-        capability = Capability(id="semantic_labels", version=Version(1, 0, 0))
+    def test_dto_fields(self):
+        capability = Capability(
+            id="semantic_labels", version="1.0.0", path="capabilities/semantic_labels", requirements=[]
+        )
 
-        self.assertEqual(capability.enum_id, "SEMANTIC_LABELS")
-        self.assertEqual(capability.enum_id_version, "SEMANTIC_LABELS_V1_0_0")
-
-    def test_class_name(self):
-        capability = Capability(id="semantic_labels")
-
-        self.assertEqual(capability.class_name, "SemanticLabels")
+        self.assertEqual(capability.id, "semantic_labels")
+        self.assertEqual(capability.version, "1.0.0")
+        self.assertEqual(capability.path, "capabilities/semantic_labels")
+        self.assertEqual(capability.requirements, [])

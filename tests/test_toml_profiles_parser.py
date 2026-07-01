@@ -4,10 +4,10 @@
 
 import tempfile
 import unittest
-from shutil import copytree
 from pathlib import Path
+from shutil import copytree
 
-from usd_profiles_nvidia.model import IdVersion, Version
+from usd_profiles_nvidia.model import IdVersion, ProfileFeature, Version
 from usd_profiles_nvidia.parsers import ProfilesParser
 from usd_profiles_nvidia.toml import TomlProfilesParser
 
@@ -28,20 +28,35 @@ class TestTomlProfilesParser(unittest.TestCase):
     def test_parse_profile_features(self):
         neutral_v1 = next(p for p in self.profiles if p.id == "Prop-Robotics-Neutral" and str(p.version) == "1.0.0")
         self.assertEqual(len(neutral_v1.features), 2)
-        self.assertEqual(neutral_v1.features[0], IdVersion("FET001_BASE_NEUTRAL", Version("0.1.0")))
-        self.assertEqual(neutral_v1.features[1], IdVersion("FET003_BASE_NEUTRAL", Version("0.1.0")))
+        self.assertEqual(neutral_v1.features[0], ProfileFeature(IdVersion("FET001_BASE_NEUTRAL", Version("0.1.0"))))
+        self.assertEqual(neutral_v1.features[1], ProfileFeature(IdVersion("FET003_BASE_NEUTRAL", Version("0.1.0"))))
+        self.assertFalse(neutral_v1.features[0].optional)
+        self.assertFalse(neutral_v1.features[1].optional)
+
+    def test_parse_optional_profile_feature(self):
+        root_dir = str(Path(__file__).parent / "resources" / "optional-profile-spec" / "profiles")
+        profiles = TomlProfilesParser(root_dir=root_dir, path=root_dir).parse()
+
+        profile = next(p for p in profiles if p.id == "Optional-Profile")
+        self.assertEqual(
+            profile.features,
+            [
+                ProfileFeature(IdVersion("required", Version("1.0.0"))),
+                ProfileFeature(IdVersion("extra", Version("1.0.0")), optional=True),
+            ],
+        )
 
     def test_parse_multi_version_profile(self):
         neutral_v1 = next(p for p in self.profiles if p.id == "Prop-Robotics-Neutral" and str(p.version) == "1.0.0")
         neutral_v2 = next(p for p in self.profiles if p.id == "Prop-Robotics-Neutral" and str(p.version) == "2.0.0")
-        self.assertEqual(neutral_v1.features[0], IdVersion("FET001_BASE_NEUTRAL", Version("0.1.0")))
-        self.assertEqual(neutral_v2.features[0], IdVersion("FET001_BASE_NEUTRAL", Version("1.0.0")))
+        self.assertEqual(neutral_v1.features[0].feature, IdVersion("FET001_BASE_NEUTRAL", Version("0.1.0")))
+        self.assertEqual(neutral_v2.features[0].feature, IdVersion("FET001_BASE_NEUTRAL", Version("1.0.0")))
 
     def test_parse_robot_body_isaac(self):
         isaac = next(p for p in self.profiles if p.id == "Robot-Body-Isaac")
-        self.assertEqual(isaac.version, Version("1.0.0"))
+        self.assertEqual(isaac.version, "1.0.0")
         self.assertEqual(len(isaac.features), 3)
-        self.assertEqual(isaac.features[1], IdVersion("FET004_ROBOT_PHYSX", Version("0.2.0")))
+        self.assertEqual(isaac.features[1].feature, IdVersion("FET004_ROBOT_PHYSX", Version("0.2.0")))
 
     def test_parse_without_toml_file(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -49,7 +64,7 @@ class TestTomlProfilesParser(unittest.TestCase):
 
     def test_profile_name_preserved(self):
         isaac = next(p for p in self.profiles if p.id == "Robot-Body-Isaac")
-        self.assertEqual(isaac.name, "Robot-Body-Isaac")
+        self.assertEqual(isaac.display_name, "Robot-Body-Isaac")
 
     def test_malformed_version_not_a_table(self):
         # Version entry is a plain string instead of a TOML inline table — hits
@@ -69,22 +84,33 @@ class TestTomlProfilesParser(unittest.TestCase):
                 TomlProfilesParser(root_dir=tmpdir, path=tmpdir).parse()
             self.assertIn("missing required 'features' key", str(ctx.exception))
 
-    def test_malformed_feature_multi_key(self):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            toml_path = str(Path(tmpdir) / "profiles.toml")
-            Path(toml_path).write_text(
-                '[Bad]\n"1.0.0" = {features = [{A = {version = "1.0.0"}, B = {version = "2.0.0"}}]}\n'
-            )
-            with self.assertRaises(ValueError) as ctx:
-                TomlProfilesParser(root_dir=tmpdir, path=tmpdir).parse()
-            self.assertIn("single-key", str(ctx.exception))
-
     def test_malformed_feature_missing_version(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             toml_path = str(Path(tmpdir) / "profiles.toml")
             Path(toml_path).write_text('[Bad]\n"1.0.0" = {features = [{FET001 = {}}]}\n')
             with self.assertRaises(KeyError):
                 TomlProfilesParser(root_dir=tmpdir, path=tmpdir).parse()
+
+    def test_malformed_feature_multiple_keys(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            toml_path = str(Path(tmpdir) / "profiles.toml")
+            Path(toml_path).write_text(
+                "[Bad]\n"
+                '"1.0.0" = {features = ['
+                '{FET001 = {version = "1.0.0"}, FET002 = {version = "1.0.0"}, optional = true}'
+                "]}\n"
+            )
+            with self.assertRaises(ValueError) as ctx:
+                TomlProfilesParser(root_dir=tmpdir, path=tmpdir).parse()
+            self.assertIn("Expected exactly one feature key per entry", str(ctx.exception))
+
+    def test_malformed_feature_missing_key(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            toml_path = str(Path(tmpdir) / "profiles.toml")
+            Path(toml_path).write_text('[Bad]\n"1.0.0" = {features = [{optional = true}]}\n')
+            with self.assertRaises(ValueError) as ctx:
+                TomlProfilesParser(root_dir=tmpdir, path=tmpdir).parse()
+            self.assertIn("Expected exactly one feature key per entry", str(ctx.exception))
 
     def test_malformed_bad_version_string(self):
         with tempfile.TemporaryDirectory() as tmpdir:

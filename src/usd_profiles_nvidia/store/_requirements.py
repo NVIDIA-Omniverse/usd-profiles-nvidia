@@ -2,14 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import logging
 from typing import Any
 
-from usd_profiles_nvidia.model import Capability, IdVersion, Requirement
+from usd_profiles_nvidia.api import Capability, Requirement, RequirementRef
+from usd_profiles_nvidia.model import IdVersion, Version
 
 from ._keystore import PersistentVersionedRegistry
-
-logger = logging.getLogger(__name__)
 
 
 class RequirementStore(PersistentVersionedRegistry[Requirement]):
@@ -27,5 +25,13 @@ class RequirementStore(PersistentVersionedRegistry[Requirement]):
 
     def create_key(self, value: Any) -> IdVersion | None:
         if isinstance(value, Requirement):
-            return IdVersion(value.code, value.version)
+            return IdVersion(value.code, Version(value.version) if value.version else None)
         return None
+
+    def find_all(self, keys: list[RequirementRef]) -> list[Requirement]:
+        result: list[Requirement] = []
+        for key in keys:
+            value: Requirement | None = self.find(IdVersion(key.code, Version(key.version) if key.version else None))
+            if value is not None:
+                result.append(value)
+        return result

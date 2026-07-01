@@ -4,14 +4,19 @@
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 from dataclasses import dataclass
 from functools import cache
 
+from usd_profiles_nvidia.graph import CapabilityGraphBuilder
+from usd_profiles_nvidia.json import JsonSerialize
 from usd_profiles_nvidia.model import Specifications
 from usd_profiles_nvidia.parsers import SpecificationsParser
 from usd_profiles_nvidia.store import SpecificationsStore
+
+from ._py_model import PythonStoreView
 
 
 @cache
@@ -40,7 +45,7 @@ class PythonGenerator:
         profiles_root: Directory containing profile files.
         features_root: Directory containing feature files.
         destination_dir: Output directory for generated Python code.
-        package_name: Python package path for generated modules (e.g. ``"omni.profiles"`` → ``omni/profiles/``).
+        package_name: Python package path for generated modules (e.g. ``"omni.profiles"`` -> ``omni/profiles/``).
         reverse_domain: Reverse-domain prefix for spec identifiers (e.g. ``"com.nvidia.simready"``). Empty means legacy behavior.
     """
 
@@ -77,7 +82,7 @@ class PythonGenerator:
     def _generate_module(
         self,
         name: str,
-        store: SpecificationsStore,
+        store: PythonStoreView,
     ) -> None:
         destination_file: str = os.path.join(self.python_output_dir, f"{name}.py")
         content = self._render_template(
@@ -94,13 +99,18 @@ class PythonGenerator:
             destination_fptr.write(content)
 
     def _generate_protocols(self) -> None:
-        source_file: str = os.path.join(os.path.dirname(__file__), "resources", "_protocols.py")
-        with open(source_file, encoding="utf-8") as source_fptr:
-            content = source_fptr.read()
+        source_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "api")
+        destination_dir = os.path.join(self.python_output_dir, "_api")
+        shutil.rmtree(destination_dir, ignore_errors=True)
+        shutil.copytree(
+            source_dir,
+            destination_dir,
+            ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo"),
+        )
 
+        source_file: str = os.path.join(os.path.dirname(__file__), "resources", "_protocols.py")
         destination_file: str = os.path.join(self.python_output_dir, "_protocols.py")
-        with open(destination_file, "w", encoding="utf-8") as destination_fptr:
-            destination_fptr.write(content)
+        shutil.copy2(source_file, destination_file)
 
     def _generate_example_files(self, store: SpecificationsStore) -> None:
         examples_dir: str = os.path.join(self.python_output_dir, "resources", "examples")
@@ -114,22 +124,34 @@ class PythonGenerator:
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(example.snippet.content)
 
+    def _generate_capability_graph_json(self, specifications: Specifications) -> None:
+        graph_namespace: str = (self.reverse_domain or self.package_name).rstrip(".")
+        graph = CapabilityGraphBuilder(
+            graph_namespace=graph_namespace,
+            requirement_namespace=self.reverse_domain,
+        ).build(specifications)
+        output_path = os.path.join(self.python_output_dir, "capabilities.json")
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(graph, f, cls=JsonSerialize, indent=2)
+            f.write("\n")
+
     def generate(self) -> None:
         specifications: Specifications = SpecificationsParser(
             root_dir=self.docs_root,
             capabilities_root=self.capabilities_root,
             profiles_root=self.profiles_root,
             features_root=self.features_root,
-            reverse_domain=self.reverse_domain,
         ).parse()
         store: SpecificationsStore = SpecificationsStore(specifications)
+        py_store = PythonStoreView(store, namespace=self.reverse_domain)
 
-        self._generate_module("__init__", store)
-        self._generate_module("_parameters", store)
-        self._generate_module("_requirements", store)
-        self._generate_module("_capabilities", store)
-        self._generate_module("_profiles", store)
-        self._generate_module("_features", store)
-        self._generate_module("_examples", store)
+        self._generate_module("__init__", py_store)
+        self._generate_module("_parameters", py_store)
+        self._generate_module("_requirements", py_store)
+        self._generate_module("_capabilities", py_store)
+        self._generate_module("_profiles", py_store)
+        self._generate_module("_features", py_store)
+        self._generate_module("_examples", py_store)
         self._generate_protocols()
         self._generate_example_files(store)
+        self._generate_capability_graph_json(specifications)

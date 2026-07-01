@@ -149,4 +149,8 @@ class Document(WalkSectionsMixin):
     """A markdown document."""
 
     sections: Sections = field(default_factory=Sections)
+    content: str = ""
+    tables: list[Table] = field(default_factory=list)
+    fences: list[Fence] = field(default_factory=list)
+    bullets: list[BulletList] = field(default_factory=list)
     level: ClassVar[int] = 0

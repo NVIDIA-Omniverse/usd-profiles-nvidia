@@ -3,18 +3,10 @@
 #
 
 from dataclasses import dataclass
-from enum import Enum
+
+from usd_profiles_nvidia.api import ParameterType
 
 from ._naming import Naming
-
-
-class ParameterType(str, Enum):
-    """Valid parameter types for requirements."""
-
-    INT = "int"
-    BOOL = "bool"
-    FLOAT = "float"
-    ENUM = "enum"
 
 
 @dataclass(slots=True)

@@ -2,14 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import logging
 from typing import Any
 
-from usd_profiles_nvidia.model import Feature, IdVersion, Version
+from usd_profiles_nvidia.api import Feature, RequirementRef
+from usd_profiles_nvidia.model import IdVersion, Version
 
 from ._keystore import PersistentVersionedRegistry
-
-logger = logging.getLogger(__name__)
 
 
 class FeatureStore(PersistentVersionedRegistry[Feature]):
@@ -22,12 +20,12 @@ class FeatureStore(PersistentVersionedRegistry[Feature]):
 
     def create_key(self, value: Any) -> IdVersion | None:
         if isinstance(value, Feature):
-            return IdVersion(value.id, Version(value.version))
+            return IdVersion(value.id, Version(value.version) if value.version else None)
         return None
 
-    def resolve_requirements(self, feature: Feature) -> list[IdVersion]:
+    def resolve_requirements(self, feature: Feature) -> list[RequirementRef]:
         """
-        Return all requirements in the inheritance chain.
+        Return all requirements declared by the feature.
 
         Args:
             feature: The feature to resolve the requirements for.
@@ -35,11 +33,7 @@ class FeatureStore(PersistentVersionedRegistry[Feature]):
         Returns:
             A list of requirements.
         """
-        base: list[IdVersion] = []
-        if feature.extends:
-            if parent := self.find(feature.extends):
-                base.extend(self.resolve_requirements(parent))
-        merged: dict[str, IdVersion] = {iv.id: iv for iv in base}
-        for iv in feature.requirements:
-            merged[iv.id] = iv
+        merged: dict[str, RequirementRef] = {}
+        for requirement in feature.requirements:
+            merged[requirement.code] = requirement
         return list(merged.values())

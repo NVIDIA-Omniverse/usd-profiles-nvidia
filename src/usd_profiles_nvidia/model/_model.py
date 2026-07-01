@@ -7,7 +7,6 @@ from dataclasses import dataclass, field
 
 from ._metadata import Metadata
 from ._naming import Naming
-from ._version import Version
 
 
 @dataclass(slots=True, kw_only=True)
@@ -18,14 +17,14 @@ class Model:
     Args:
         id: The id of the model.
         version: The version of the model.
-        name: The name of the model.
-        description: The description of the model.
+        display_name: The display name of the model.
+        message: The message of the model.
     """
 
     id: str = ""
-    version: Version | None = None
-    name: str | None = None
-    description: str | None = None
+    version: str | None = None
+    display_name: str | None = None
+    message: str | None = None
     metadata: Metadata = field(default_factory=Metadata)
     namespace: str = ""
 

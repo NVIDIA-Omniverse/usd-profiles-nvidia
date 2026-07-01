@@ -2,13 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import logging
-
 from usd_profiles_nvidia.model import Specifications
 from usd_profiles_nvidia.parsers import SpecificationsParser
 from usd_profiles_nvidia.store import RequirementStore
-
-logger = logging.getLogger(__name__)
 
 
 def parse_specifications(app) -> None:

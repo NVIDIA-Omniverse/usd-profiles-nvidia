@@ -4,8 +4,9 @@
 
 from dataclasses import dataclass, field
 
+from usd_profiles_nvidia.api import FeatureRef, RequirementRef
+
 from ._model import Model
-from ._version import IdVersion
 
 
 @dataclass(slots=True)
@@ -14,11 +15,9 @@ class Feature(Model):
     Represents a feature of a capability.
 
     Args:
-        requirements (list[IdVersion]): The requirements of the feature.
-        dependency (str): The dependency of the feature.
-        extends (IdVersion | None): The feature this feature extends, if any.
+        requirements (list[RequirementRef]): The requirements of the feature.
+        dependencies (list[FeatureRef]): Other features this feature depends on.
     """
 
-    requirements: list[IdVersion] = field(default_factory=list)
-    dependency: str | None = None
-    extends: IdVersion | None = None
+    requirements: list[RequirementRef] = field(default_factory=list)
+    dependencies: list[FeatureRef] = field(default_factory=list)

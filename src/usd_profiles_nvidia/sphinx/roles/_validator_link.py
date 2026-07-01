@@ -16,9 +16,9 @@ DEFAULT_VALIDATORS = {
 }
 
 
-def _get_validator(app: Sphinx, validator_key: str) -> dict:
+def _get_validator(config: Any, validator_key: str) -> dict:
     """Get validator config, merging defaults with overrides."""
-    overrides = app.config.validator_links
+    overrides = config.validator_links
     validator = DEFAULT_VALIDATORS.get(validator_key, {}).copy()
     validator.update(overrides.get(validator_key, {}))
     return validator
@@ -38,7 +38,7 @@ def validator_link_role(
     .. code-block:: rst
         :validator-link:`oav:1.0_aa-002`
     """
-    app = inliner.document.settings.env.app
+    config = inliner.document.settings.env.config
 
     try:
         validator_key, rest = text.split(":", 1)
@@ -46,7 +46,7 @@ def validator_link_role(
         msg = inliner.reporter.error(f"Invalid format. Expected 'validator:version_code', got: {text}")
         return [], [msg]
 
-    validator = _get_validator(app, validator_key)
+    validator = _get_validator(config, validator_key)
     if not validator:
         msg = inliner.reporter.error(f"Unknown validator: {validator_key}")
         return [], [msg]
@@ -78,7 +78,7 @@ def validator_latest_link_role(
     .. code-block:: rst
         :validator-latest-link:`oav:aa-002`
     """
-    app = inliner.document.settings.env.app
+    config = inliner.document.settings.env.config
 
     try:
         validator_key, code = text.split(":", 1)
@@ -86,7 +86,7 @@ def validator_latest_link_role(
         msg = inliner.reporter.error(f"Invalid format. Expected 'validator:code', got: {text}")
         return [], [msg]
 
-    validator = _get_validator(app, validator_key)
+    validator = _get_validator(config, validator_key)
     if not validator:
         msg = inliner.reporter.error(f"Unknown validator: {validator_key}")
         return [], [msg]

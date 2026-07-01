@@ -39,6 +39,37 @@ A paragraph of text.
         self.assertEqual(doc.sections[0].title, "My Section")
         self.assertIn("A paragraph of text", doc.sections[0].content)
 
+    def test_preamble_paragraph_before_first_heading(self):
+        md = """
+Intro paragraph before any heading.
+
+# My Section
+"""
+        doc = self._parse_md(md)
+        self.assertEqual(doc.content, "Intro paragraph before any heading.")
+        self.assertEqual(len(doc.sections), 1)
+        self.assertEqual(doc.sections[0].title, "My Section")
+
+    def test_preamble_blocks_before_first_heading(self):
+        md = """
+| Key   | Value |
+| ----- | ----- |
+| code  | X.001 |
+
+```python
+x = 1
+```
+
+- Item one.
+
+# My Section
+"""
+        doc = self._parse_md(md)
+        self.assertEqual(doc.tables[0].to_dict()["code"], "X.001")
+        self.assertEqual(doc.fences[0].content, "x = 1")
+        self.assertEqual(doc.bullets[0][0].content, "Item one.")
+        self.assertEqual(doc.sections[0].title, "My Section")
+
     def test_single_section_with_multiple_paragraphs(self):
         md = """
 # My Section

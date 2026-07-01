@@ -3,3 +3,4 @@
 **/__pycache__/
 _*/
 dist
+!src/usd_profiles_nvidia/sphinx/static/_static/

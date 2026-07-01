@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from usd_profiles_nvidia.markdown import RequirementsParser
-from usd_profiles_nvidia.model import Compatibility, Tag, Version
+from usd_profiles_nvidia.model import Compatibility, Tag
 
 
 class TestRequirementsParser(unittest.TestCase):
@@ -20,11 +20,13 @@ class TestRequirementsParser(unittest.TestCase):
 
         req = next((r for r in requirements if r.code == "VG.RTX.002"), None)
         self.assertIsNotNone(req, "VG.RTX.002 requirement should exist")
-        self.assertEqual(req.version, Version(1, 0, 0))
-        self.assertEqual(req.name, "usdgeom-mesh-count")
-        self.assertEqual(req.description, "Use appropriate mesh count for scene.")
-        self.assertEqual(req.compatibility, Compatibility.RTX)
-        self.assertEqual(req.tags, Tag.PERFORMANCE)
+        self.assertEqual(req.version, "1.0.0")
+        self.assertEqual(req.display_name, "usdgeom-mesh-count")
+        self.assertEqual(req.message, "Use appropriate mesh count for scene.")
+        self.assertEqual(req.compatibility, Compatibility.RTX.display_name)
+        self.assertEqual(req.validator, "{oav-validator-latest-link}`vg-rtx-002`")
+        self.assertEqual(req.tags, (Tag.PERFORMANCE.display_name,))
+        self.assertIsInstance(req.parameters, tuple)
         self.assertEqual(len(req.parameters), 0)
 
     def test_parse_parameters_ok(self):
@@ -36,8 +38,9 @@ class TestRequirementsParser(unittest.TestCase):
         # Test requirement with multiple parameters (VG.RTX.003)
         req = next((r for r in requirements if r.code == "VG.RTX.003"), None)
         self.assertIsNotNone(req)
-        self.assertEqual(req.version, Version(1, 0, 0))
-        self.assertEqual(req.name, "usdgeom-param-test")
+        self.assertEqual(req.version, "1.0.0")
+        self.assertEqual(req.display_name, "usdgeom-param-test")
+        self.assertIsInstance(req.parameters, tuple)
         self.assertEqual(len(req.parameters), 3)
 
         params = {p.display_name: p for p in req.parameters}

@@ -8,9 +8,9 @@
   - Compatibility
   - Validator
 {%- for requirement in requirements %}
-* - {% if requirement.tags %}{tag}`{{ requirement.tags.display_name }}`{% endif %}
-  - [{{ requirement.description }}](/{{requirement.metadata.md_path}})
-  - {% if requirement.compatibility %}{compatibility}`{{ requirement.compatibility.display_name }}`{% endif %}
+* - {% if requirement.tags %}{% for tag in requirement.tags %}{tag}`{{ tag }}`{% if not loop.last %} {% endif %}{% endfor %}{% endif %}
+  - {% if requirement.path %}[{{ requirement.message }}](/{{ requirement.path }}.md){% else %}{{ requirement.message }}{% endif %}
+  - {% if requirement.compatibility %}{compatibility}`{{ requirement.compatibility }}`{% endif %}
   {%- if requirement.validator %}
   - {{ requirement.validator }}
   {%- else %}

@@ -6,7 +6,14 @@ import logging
 import os
 from dataclasses import dataclass
 
-from usd_profiles_nvidia.model import IdVersion, Metadata, Naming, Profile
+from usd_profiles_nvidia.model import (
+    IdVersion,
+    Metadata,
+    Naming,
+    Profile,
+    ProfileFeature,
+    Version,
+)
 
 from ._features import FeatureParser
 from ._parser import FileParser, walk_md
@@ -22,7 +29,7 @@ class _ProfileTreeProcessor(FileParser):
         """
         return Naming.identifier(self.title)
 
-    def _parse_features(self, document) -> list[str]:
+    def _parse_features(self, document) -> list[ProfileFeature]:
         """
         Parse the features from the document.
         """
@@ -30,7 +37,7 @@ class _ProfileTreeProcessor(FileParser):
             raise ValueError(f"Profile {self.relpath} has more than one section.")
         if document.sections[0].sections.get("features") is None:
             raise ValueError(f"Profile {self.relpath} has no features section.")
-        features: list[str] = []
+        features: list[ProfileFeature] = []
         for bullet_list in document.sections[0].sections.get("features").bullets:
             for bullet in bullet_list:
                 for link in bullet.links:
@@ -42,16 +49,19 @@ class _ProfileTreeProcessor(FileParser):
                     if not os.path.exists(feature_path):
                         raise ValueError(f"Profile {self.relpath} references feature {link.href} which does not exist.")
                     if feature := FeatureParser(self.root_dir, feature_path).parse():
-                        features.append(IdVersion(feature.id, feature.version))
+                        # Markdown profile links do not currently encode optionality; TOML profiles can set it.
+                        features.append(
+                            ProfileFeature(IdVersion(feature.id, Version(feature.version) if feature.version else None))
+                        )
         return features
 
     def run(self) -> Profile:
         document = self.document
         return Profile(
             id=self._parse_id(document),
-            version=self.default_version,
-            name=self.title,
-            description=self.description,
+            version=str(self.default_version),
+            display_name=self.title,
+            message=self.description,
             features=self._parse_features(document),
             metadata=Metadata(path=self.relpath),
         )

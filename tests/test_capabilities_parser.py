@@ -6,7 +6,7 @@ import os
 import unittest
 
 from usd_profiles_nvidia.markdown import CapabilitiesParser
-from usd_profiles_nvidia.model import Compatibility, Tag, Version
+from usd_profiles_nvidia.model import Compatibility, Tag
 
 
 class TestCapabilitiesParser(unittest.TestCase):
@@ -18,15 +18,11 @@ class TestCapabilitiesParser(unittest.TestCase):
 
         self.assertEqual(len(capabilities), 1)
         self.assertEqual(capabilities[0].id, "geometry")
-        self.assertEqual(capabilities[0].version, Version(1, 0, 0))
-        self.assertEqual(capabilities[0].name, "Geometry")
-        self.assertEqual(
-            capabilities[0].description,
-            "This capability provides requirements for the rendering of 3D surfaces in visualization systems, proper mesh topology and geometry for physics simulation, as well as placement, orientation and positioning.",
-        )
+        self.assertEqual(capabilities[0].version, "1.0.0")
+        self.assertEqual(capabilities[0].path, "capabilities/geometry/capability-geometry")
         self.assertEqual(len(capabilities[0].requirements), 1)
         self.assertEqual(capabilities[0].requirements[0].code, "VG.RTX.002")
-        self.assertEqual(capabilities[0].requirements[0].name, "usdgeom-mesh-count")
-        self.assertEqual(capabilities[0].requirements[0].description, "Use appropriate mesh count for scene.")
-        self.assertEqual(capabilities[0].requirements[0].compatibility, Compatibility.RTX)
-        self.assertEqual(capabilities[0].requirements[0].tags, Tag.PERFORMANCE)
+        self.assertEqual(capabilities[0].requirements[0].display_name, "usdgeom-mesh-count")
+        self.assertEqual(capabilities[0].requirements[0].message, "Use appropriate mesh count for scene.")
+        self.assertEqual(capabilities[0].requirements[0].compatibility, Compatibility.RTX.display_name)
+        self.assertEqual(capabilities[0].requirements[0].tags, (Tag.PERFORMANCE.display_name,))

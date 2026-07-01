@@ -10,8 +10,9 @@ from docutils import nodes
 from docutils.statemachine import StringList
 from sphinx.util.docutils import SphinxDirective
 
+from usd_profiles_nvidia.api import Capability, Requirement
 from usd_profiles_nvidia.markdown import CapabilityParser
-from usd_profiles_nvidia.model import Capability, Requirement
+from usd_profiles_nvidia.model import tag_priority
 
 from ._common import get_directives_environment
 
@@ -55,7 +56,8 @@ class RequirementsTableDirective(SphinxDirective):
         env = self.state.document.settings.env
         docname: str = env.docname
         for requirement in requirements:
-            env.included[docname].add(requirement.metadata.path)
+            if requirement.path:
+                env.included[docname].add(requirement.path)
 
         try:
             string_list = StringList(table_content.split("\n"), source="requirements-table")
@@ -77,7 +79,7 @@ class RequirementsTableDirective(SphinxDirective):
             The table content as a string
         """
         template = get_directives_environment().get_template("_requirements_table.md.j2")
-        return template.render(requirements=sorted(requirements, key=lambda x: (x.priority, x.code)))
+        return template.render(requirements=sorted(requirements, key=lambda x: (tag_priority(x.tags), x.code)))
 
 
 def setup(app) -> dict[str, bool]:

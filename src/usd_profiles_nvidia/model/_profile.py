@@ -8,13 +8,27 @@ from ._model import Model
 from ._version import IdVersion
 
 
+@dataclass(frozen=True, slots=True)
+class ProfileFeature:
+    """
+    Represents a feature reference declared by a profile.
+
+    Args:
+        feature: The referenced feature id and version.
+        optional: Whether the profile treats this feature as optional.
+    """
+
+    feature: IdVersion
+    optional: bool = False
+
+
 @dataclass(slots=True)
 class Profile(Model):
     """
     Represents a profile.
 
     Args:
-        features (list[IdVersion]): The features of the profile.
+        features (list[ProfileFeature]): The feature references of the profile.
     """
 
-    features: list[IdVersion] = field(default_factory=list)
+    features: list[ProfileFeature] = field(default_factory=list)

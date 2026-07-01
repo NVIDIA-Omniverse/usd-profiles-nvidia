@@ -6,7 +6,8 @@ import logging
 import os
 from dataclasses import dataclass
 
-from usd_profiles_nvidia.model import Capability, Metadata, Requirement
+from usd_profiles_nvidia.api import Capability, Requirement
+from usd_profiles_nvidia.model import Metadata
 
 from ._parser import walk_md
 from ._references import ReferencesParser
@@ -32,11 +33,9 @@ class _CapabilityParser(ReferencesParser):
             return None
         return Capability(
             id=self.default_id,
-            version=self.default_version,
-            name=self.title or self.default_name,
-            description=self.overview_content,
+            version=str(self.default_version),
+            path=Metadata(path=self.relpath).path,
             requirements=requirements,
-            metadata=Metadata(path=self.relpath),
         )
 
 

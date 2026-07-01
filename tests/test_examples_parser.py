@@ -17,14 +17,15 @@ class TestExamplesParser(unittest.TestCase):
         requirements = parser.parse()
 
         self.assertEqual(len(requirements), 1)
+        self.assertIsInstance(requirements[0].examples, tuple)
         self.assertEqual(len(requirements[0].examples), 2)
 
         self.assertEqual(requirements[0].examples[0].result, ExampleResult.FAILURE)
         self.assertEqual(requirements[0].examples[0].snippet.language, ExampleSnippetLanguage.USD)
         self.assertIn('def Xform "Xform1"', requirements[0].examples[0].snippet.content)
-        self.assertEqual("Scattered Xforms without common root", requirements[0].examples[0].name)
+        self.assertEqual("Scattered Xforms without common root", requirements[0].examples[0].display_name)
 
         self.assertEqual(requirements[0].examples[1].result, ExampleResult.SUCCESS)
         self.assertEqual(requirements[0].examples[1].snippet.language, ExampleSnippetLanguage.USD)
         self.assertIn('def Xform "RootXform"', requirements[0].examples[1].snippet.content)
-        self.assertEqual("All Xforms under single root", requirements[0].examples[1].name)
+        self.assertEqual("All Xforms under single root", requirements[0].examples[1].display_name)

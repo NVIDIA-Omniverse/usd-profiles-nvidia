@@ -2,14 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-import logging
 from typing import Any
 
-from usd_profiles_nvidia.model import Capability, IdVersion, SimpleSpec, Version
+from usd_profiles_nvidia.api import Capability
+from usd_profiles_nvidia.model import IdVersion, SimpleSpec, Version
 
 from ._keystore import PersistentVersionedRegistry
-
-logger = logging.getLogger(__name__)
 
 
 class CapabilityStore(PersistentVersionedRegistry[Capability]):
@@ -22,7 +20,7 @@ class CapabilityStore(PersistentVersionedRegistry[Capability]):
 
     def create_key(self, value: Any) -> IdVersion | None:
         if isinstance(value, Capability):
-            return IdVersion(value.id, Version(value.version))
+            return IdVersion(value.id, Version(value.version) if value.version else None)
         return None
 
     def get_by_spec(self, id_specifier: str) -> Capability | None:
@@ -46,6 +44,6 @@ class CapabilityStore(PersistentVersionedRegistry[Capability]):
             if not id_specifier.startswith(key.id):
                 continue
             specifier = id_specifier[len(key.id) :]
-            if key.version in SimpleSpec(specifier):
+            if key.version is not None and key.version in SimpleSpec(specifier):
                 return capability
         return None

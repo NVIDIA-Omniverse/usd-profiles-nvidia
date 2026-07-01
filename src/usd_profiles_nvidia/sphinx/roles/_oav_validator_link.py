@@ -26,8 +26,8 @@ def oav_validator_link_role(
     version = raw_version.replace("+", "")
 
     # Access Sphinx config through inliner
-    app = inliner.document.settings.env.app
-    base_url = app.config.oav_validator_base_url
+    config = inliner.document.settings.env.config
+    base_url = config.oav_validator_base_url
 
     html = f'<a class="reference external" href="{base_url}{version}/source/python/docs/requirements.html#{code}"><span class="tag tag-nvidia">{raw_version}</span></a>'
     return [nodes.raw("", html, format="html")], []
@@ -48,9 +48,9 @@ def oav_validator_latest_link_role(
         :oav-validator-latest-link:`aa-002`
     """
     # Access Sphinx config through inliner
-    app = inliner.document.settings.env.app
-    version = app.config.oav_validator_latest_version
-    base_url = app.config.oav_validator_base_url
+    config = inliner.document.settings.env.config
+    version = config.oav_validator_latest_version
+    base_url = config.oav_validator_base_url
 
     code = text.strip()
     html = f'<a class="reference external" href="{base_url}{version}/source/python/docs/requirements.html#{code}"><span class="tag tag-nvidia">{version}+</span></a>'
